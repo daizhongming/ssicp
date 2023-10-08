@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://139.224.255.200:13306/ssicp?useUnicode=true&characterEncoding=utf-8&useSSL=false
+      username: njzlh
+      password: njzlh20230411
+      stat-view-servlet:
+        enabled: true
+      web-stat-filter:
+        enabled: true
+
+app:
+  file:
+    path: D:/files/ssicp
+
+config:
+  aiModelService:
+    url: http://localhost:8081

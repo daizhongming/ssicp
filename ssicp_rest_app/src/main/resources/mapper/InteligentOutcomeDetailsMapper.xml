@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.InteligentOutcomeDetailsMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO inteligent_outcome_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != indexValue">
+                index_value,
+            </if>
+            <if test="null != alarmLevel">
+                alarm_level,
+            </if>
+            <if test="null != index and '' != index">
+                `index`,
+            </if>
+            <if test="null != deviceId and '' != deviceId">
+                device_id,
+            </if>
+            <if test="null != outcomeCode and '' != outcomeCode">
+                outcome_code,
+            </if>
+            <if test="null != comments and '' != comments">
+                comments,
+            </if>
+            <if test="null != infoId and '' != infoId">
+                info_id,
+            </if>
+            unit
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="null != indexValue">
+                #{indexValue},
+            </if>
+            <if test="null != alarmLevel">
+                #{alarmLevel},
+            </if>
+            <if test="null != index and '' != index">
+                #{index},
+            </if>
+            <if test="null != deviceId and '' != deviceId">
+                #{deviceId},
+            </if>
+            <if test="null != outcomeCode and '' != outcomeCode">
+                #{outcomeCode},
+            </if>
+            <if test="null != comments and '' != comments">
+                #{comments},
+            </if>
+            <if test="null != infoId and '' != infoId">
+                #{infoId},
+            </if>
+            #{unit}
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE inteligent_outcome_details
+        <set>
+            <if test="null != indexValue">index_value = #{indexValue},</if>
+            <if test="null != alarmLevel">alarm_level = #{alarmLevel},</if>
+            <if test="null != index and '' != index">`index` = #{index},</if>
+            <if test="null != deviceId and '' != deviceId">device_id = #{deviceId},</if>
+            <if test="null != outcomeCode and '' != outcomeCode">outcome_code = #{outcomeCode},</if>
+            <if test="null != comments and '' != comments">comments = #{comments},</if>
+            <if test="null != infoId and '' != infoId">info_id = #{infoId}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByoutcomeCode" resultType="com.zhilianhua.ssicp.entity.response.IntelligentOutcomeDetailsVo">
+        SELECT od.`index`,
+               d.device_name,
+               od.index_value,
+               od.alarm_level,
+               da.lower_alarm,
+               da.senior_alarm,
+               da.senior_senior_alarm,
+               d.parent_device_type,
+               dict.dict_label AS parent_device_type_name,
+               od.unit,
+               d.id            AS device_id,
+               od.id           AS details_id
+        FROM inteligent_outcome_details AS od
+                 JOIN device AS d ON od.device_id = d.id
+                 LEFT JOIN device_alarm AS da ON od.device_id = da.device_id AND od.`index` = da.`index`
+                 LEFT JOIN dict_data dict ON dict.type_code = 'device_type' AND dict.dict_value = d.parent_device_type
+        WHERE od.outcome_code = #{outcomeCode}
+    </select>
+</mapper>

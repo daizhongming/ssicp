@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.LogMapper">
+    <sql id="searchCondition">
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and method_title like concat('%',#{keyword},'%')
+            </if>
+            <if test="successFlag!=null and successFlag==1">
+                and error is null
+            </if>
+            <if test="successFlag!=null and successFlag==0">
+                and error is not null
+            </if>
+            <if test="dateRangeStart!=null">
+                and create_time &gt;= #{dateRangeStart}
+            </if>
+            <if test="dateRangeEnd!=null">
+                and create_time &lt;= #{dateRangeEnd}
+            </if>
+        </where>
+    </sql>
+    <insert id="add">
+        insert into log
+        (create_user_name,create_user_nick_name,class_title,method_title,ip,request,response,error,cost_time)
+        values
+        (#{createUserName},#{createUserNickName},#{classTitle},#{methodTitle},#{ip},#{request},#{response},#{error},#{costTime})
+    </insert>
+    <select id="search" resultType="com.zhilianhua.ssicp.entity.db.Log">
+        SELECT *
+        FROM log
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.order"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+
+    <select id="searchCount" resultType="long">
+        select count(*)
+        FROM log
+        <include refid="searchCondition"></include>
+    </select>
+</mapper>

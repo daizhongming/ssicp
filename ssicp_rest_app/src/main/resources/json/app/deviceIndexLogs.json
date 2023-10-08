@@ -1,0 +1,62 @@
+[
+  {
+    "indexName": "温度",
+    "deviceType": "pipe",
+    "deviceName": "xxxx管段001",
+    "indexValue": "180℃",
+    "createTime": "2023/04/01 08:44",
+    "alarmFlag": 0,
+    "alarmLevel": null,
+    "handleFlag": null
+  },
+  {
+    "indexName": "压力",
+    "deviceType": "pipe",
+    "deviceName": "xxxx管段001",
+    "indexValue": "3.5MPa",
+    "createTime": "2023/04/01 08:44",
+    "alarmFlag": 1,
+    "alarmLevel": 1,
+    "handleFlag": 0
+  },
+  {
+    "indexName": "流量",
+    "deviceType": "pipe",
+    "deviceName": "xxxx管段001",
+    "indexValue": "21t/h",
+    "createTime": "2023/04/01 08:44",
+    "alarmFlag": 1,
+    "alarmLevel": 2,
+    "handleFlag": 1
+  },
+  {
+    "indexName": "流量",
+    "deviceType": "pipe",
+    "deviceName": "xxxx管段002",
+    "indexValue": "21t/h",
+    "createTime": "2023/04/01 08:44",
+    "alarmFlag": 1,
+    "alarmLevel": 2,
+    "handleFlag": 0
+  },
+  {
+    "indexName": "流量",
+    "deviceType": "pipe",
+    "deviceName": "xxxx管段002",
+    "indexValue": "21t/h",
+    "createTime": "2023/04/01 08:44",
+    "alarmFlag": 1,
+    "alarmLevel": 0,
+    "handleFlag": 0
+  },
+  {
+    "indexName": "温度",
+    "deviceType": "instrument",
+    "deviceName": "xxxx仪表001",
+    "indexValue": "180℃",
+    "createTime": "2023/04/01 08:44",
+    "alarmFlag": 0,
+    "alarmLevel": null,
+    "handleFlag": null
+  }
+]

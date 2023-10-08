@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.IntelligentInspectionPlanMapper">
+    <sql id="Base_Column_List">
+        plan_code
+        ,
+                plan_name,
+                pipeline_id,
+                pipeline_name,
+                pipe_ids,
+                device_alarm_ids,
+                start_time,
+                devices_number,
+                pipe_number,
+                responsible_name,
+                inspection_times,
+                inspection_start,
+                plan_interval,
+                current_numbe,
+                create_time,
+                update_time,
+                delete_flag,
+                comments
+    </sql>
+
+    <sql id="searchCondition">
+        <where>
+            `delete_flag` = 0
+            <if test="keyword!=null and keyword!=''">
+                and iip.plan_name like concat('%',#{keyword},'%')
+            </if>
+            <if test="startTime!=null and startTime!=''">
+                and iip.start_time &gt;= #{startTime}
+            </if>
+            <if test="endTime!=null and endTime!=''">
+                and iip.start_time &lt;= #{endTime}
+            </if>
+            <if test="inspectionStart!=null and inspectionStart!=''">
+                and iip.inspection_start = #{inspectionStart}
+            </if>
+            <if test="responsibleName!=null and responsibleName!=''">
+                and iip.responsible_name = #{responsibleName}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO intelligent_inspection_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            plan_code,
+            <if test="null != planName and '' != planName">
+                plan_name,
+            </if>
+            <if test="null != pipeIds and '' != pipeIds">
+                pipe_ids,
+            </if>
+            <if test="null != pipelineIds and '' != pipelineIds">
+                pipeline_ids,
+            </if>
+            <if test="null != cycle and '' != cycle">
+                `cycle`,
+            </if>
+            <if test="null != cycleUnit and '' != cycleUnit">
+                `cycle_unit`,
+            </if>
+            <if test="null != startTime">
+                start_time,
+            </if>
+            <if test="null != responsibleName and '' != responsibleName">
+                responsible_name,
+            </if>
+            <if test="null != inspectionTimes and '' != inspectionTimes">
+                inspection_times,
+            </if>
+            <if test="null != iterationNumber and '' != iterationNumber">
+                iteration_umber,
+            </if>
+            <if test="null != inspectionStart and '' != inspectionStart">
+                inspection_start,
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                delete_flag,
+            </if>
+            <if test="null != item and '' != item">
+                item,
+            </if>
+            <if test="null != comments and '' != comments">
+                comments
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{planCode},
+            <if test="null != planName and '' != planName">
+                #{planName},
+            </if>
+            <if test="null != pipeIds and '' != pipeIds">
+                #{pipeIds},
+            </if>
+            <if test="null != pipelineIds and '' != pipelineIds">
+                #{pipelineIds},
+            </if>
+            <if test="null != cycle and '' != cycle">
+                #{cycle},
+            </if>
+            <if test="null != cycleUnit and '' != cycleUnit">
+                #{cycleUnit},
+            </if>
+            <if test="null != startTime">
+                #{startTime},
+            </if>
+            <if test="null != responsibleName and '' != responsibleName">
+                #{responsibleName},
+            </if>
+            <if test="null != inspectionTimes and '' != inspectionTimes">
+                #{inspectionTimes},
+            </if>
+            <if test="null != iterationNumber and '' != iterationNumber">
+                #{iterationNumber},
+            </if>
+            <if test="null != inspectionStart and '' != inspectionStart">
+                #{inspectionStart},
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                #{deleteFlag},
+            </if>
+            <if test="null != item and '' != item">
+                #{item},
+            </if>
+            <if test="null != comments and '' != comments">
+                #{comments}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="delete">
+        UPDATE intelligent_inspection_plan
+        SET delete_flag = 1
+        WHERE plan_code = #{planCode}
+    </update>
+    <update id="update">
+        UPDATE intelligent_inspection_plan
+        <set>
+            <if test="null != planName and '' != planName">plan_name = #{planName},</if>
+            pipe_ids = #{pipeIds},
+            pipeline_ids = #{pipelineIds},
+            <if test="null != cycle and '' != cycle">`cycle` = #{cycle},</if>
+            <if test="null != cycleUnit and '' != cycleUnit">`cycle_unit` = #{cycleUnit},</if>
+            <if test="null != startTime">start_time = #{startTime},</if>
+            <if test="null != responsibleName and '' != responsibleName">responsible_name = #{responsibleName},</if>
+            <if test="null != inspectionTimes and '' != inspectionTimes">inspection_times = #{inspectionTimes},</if>
+            <if test="null != inspectionStart">inspection_start = #{inspectionStart},</if>
+            <if test="null != deleteFlag and '' != deleteFlag">delete_flag = #{deleteFlag},</if>
+            <if test="null != item and '' != item">item = #{item},</if>
+            <if test="null != comments and '' != comments">comments = #{comments}</if>
+        </set>
+        WHERE plan_code = #{planCode}
+    </update>
+
+    <select id="pageList" resultType="com.zhilianhua.ssicp.entity.response.IntelligentInspectionPlanVO">
+        SELECT
+        iip.*,
+        (
+        SELECT COUNT(1)
+        FROM intelligent_inspection_outcome AS iio
+        WHERE iio.plan_code = iip.plan_code
+        ) AS total_count,
+        (
+        SELECT COUNT(1)
+        FROM intelligent_inspection_outcome AS iio
+        WHERE iio.plan_code = iip.plan_code
+        AND iio.state != 0
+        ) AS non_zero_count
+        FROM intelligent_inspection_plan AS iip
+        <include refid="searchCondition"></include>
+        ORDER BY iip.create_time
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+    <select id="pageListCount" resultType="long">
+        select count(*)
+        FROM intelligent_inspection_plan as iip
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="findByid" resultType="com.zhilianhua.ssicp.entity.db.IntelligentInspectionPlan">
+        select *
+        from intelligent_inspection_plan
+        where `delete_flag` = 0
+          and plan_code = #{planCode}
+    </select>
+
+</mapper>

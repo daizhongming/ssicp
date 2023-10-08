@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.FileMapper">
+    <insert id="add">
+        insert into file
+        (code,name,size,type)
+        values
+        (#{code},#{name},#{size},#{type})
+    </insert>
+    <delete id="deleteByCode">
+        delete from file where code=#{code}
+    </delete>
+    <select id="get" resultType="FileInfo">
+        select * from file where code=#{code}
+    </select>
+</mapper>

@@ -1,0 +1,8 @@
+{
+  "inspectionMaxCostTime": 60,
+  "inspectionSpeed": 5,
+  "inspectionResultPauseTime": 30,
+  "alarmShowTime": 30,
+  "nearByCameraLength": 100,
+  "intervalTime": 60
+}

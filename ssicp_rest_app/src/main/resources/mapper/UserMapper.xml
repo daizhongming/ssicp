@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.UserMapper">
+    <insert id="add">
+        insert into user (name, nick_name, password)
+        values (#{name},
+                #{nickName},
+                #{password})
+    </insert>
+    <update id="update">
+        update user
+        set nick_name=#{user.nickName}
+        where name = #{name}
+    </update>
+    <update id="changePassword">
+        update user
+        set password = #{hashpw}
+        where name = #{name}
+    </update>
+    <update id="updateRoleName">
+        update user
+        set role_name = #{roleName}
+        where name = #{userName}
+    </update>
+    <delete id="delete">
+        delete
+        from user
+        where name = #{name}
+        and system_flag=0
+    </delete>
+    <select id="findByName" resultType="com.zhilianhua.ssicp.entity.response.UserVo">
+        SELECT
+        u.*, r.title AS role_title
+        FROM
+        USER u
+        LEFT JOIN role r ON u.role_name = r. NAME
+        where u.name = #{name}
+    </select>
+    <sql id="condition">
+        <where>
+            <if test="nickName!=null and nickName!=''">
+                and u.nick_name like concat('%',#{nickName},'%')
+            </if>
+        </where>
+    </sql>
+    <select id="search" resultType="com.zhilianhua.ssicp.entity.response.UserVo">
+        SELECT u.*,r.title as role_title
+        FROM user u left join role r on u.role_name=r.name
+        <include refid="condition"></include>
+        order by u.system_flag,u.create_time desc
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="searchCount" resultType="long">
+        SELECT count(*) FROM user u
+        <include refid="condition"></include>
+    </select>
+    <select id="selectUsersWithRoleName" resultType="User">
+        select *
+        from user
+        where role_name = #{roleName}
+    </select>
+</mapper>

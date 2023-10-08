@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.ManualInspectionPlanMapper">
+    <sql id="searchCondition">
+        <where>
+            delete_flag = 0
+            <if test="keyword!=null and keyword!=''">
+                and mip.plan_name like concat('%',#{keyword},'%')
+            </if>
+            <if test="inspectionType!=null and inspectionType!=''">
+                and mip.inspection_type = #{inspectionType}
+            </if>
+            <if test="responsibleName!=null and responsibleName!=''">
+                and mip.responsible_name = #{responsibleName}
+            </if>
+            <if test="inspectionStart!=null and inspectionStart!=''">
+                and mip.inspection_start = #{inspectionStart}
+            </if>
+            <if test="startTime!=null">
+                and mip.start_time &gt;= #{startTime}
+            </if>
+            <if test="endTime!=null">
+                and mip.start_time &lt;= #{endTime}
+            </if>
+        </where>
+    </sql>
+    <insert id="add">
+        INSERT INTO manual_inspection_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != planCode and '' != planCode">
+                plan_code,
+            </if>
+            <if test="null != planName and '' != planName">
+                plan_name,
+            </if>
+            <if test="null != inspectionType">
+                inspection_type,
+            </if>
+            <if test="null != cycle">
+                `cycle`,
+            </if>
+            <if test="null != cycleUnit">
+                `cycle_unit`,
+            </if>
+            <if test="null != startTime">
+                start_time,
+            </if>
+            <if test="null != item and '' != item">
+                item,
+            </if>
+            <if test="null != inspectionStart">
+                inspection_start,
+            </if>
+            <if test="null != responsibleName and '' != responsibleName">
+                responsible_name,
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                delete_flag,
+            </if>
+            <if test="null != remarks and '' != remarks">
+                remarks,
+            </if>
+            <if test="null != pipeIds and '' != pipeIds">
+                pipe_ids,
+            </if>
+            <if test="null != pipelineIds and '' != pipelineIds">
+                pipeline_ids
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="null != planCode and '' != planCode">
+                #{planCode},
+            </if>
+            <if test="null != planName and '' != planName">
+                #{planName},
+            </if>
+            <if test="null != inspectionType">
+                #{inspectionType},
+            </if>
+            <if test="null != cycle">
+                #{cycle},
+            </if>
+            <if test="null != cycleUnit">
+                #{cycleUnit},
+            </if>
+            <if test="null != startTime">
+                #{startTime},
+            </if>
+            <if test="null != item and '' != item">
+                #{item},
+            </if>
+            <if test="null != inspectionStart">
+                #{inspectionStart},
+            </if>
+            <if test="null != responsibleName and '' != responsibleName">
+                #{responsibleName},
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                #{deleteFlag},
+            </if>
+            <if test="null != remarks and '' != remarks">
+                #{remarks},
+            </if>
+            <if test="null != pipeIds and '' != pipeIds">
+                #{pipeIds},
+            </if>
+            <if test="null != pipelineIds and '' != pipelineIds">
+                #{pipelineIds}
+            </if>
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE manual_inspection_plan
+        <set>
+            <if test="null != planName and '' != planName">plan_name = #{planName},</if>
+            <if test="null != inspectionType and '' != inspectionType">inspection_type = #{inspectionType},</if>
+            <if test="null != startTime ">start_time = #{startTime},</if>
+            <if test="null != item and '' != item">item = #{item},</if>
+            <if test="null != inspectionStart">inspection_start = #{inspectionStart},</if>
+            <if test="null != responsibleName and '' != responsibleName">responsible_name = #{responsibleName},</if>
+            <if test="null != deleteFlag">delete_flag = #{deleteFlag},</if>
+            <if test="null != remarks and '' != remarks">remarks = #{remarks},</if>
+            pipe_ids = #{pipeIds},
+            pipeline_ids = #{pipelineIds},
+            <if test="null != cycle and '' != cycle">`cycle` = #{cycle},</if>
+            <if test="null != cycleUnit and '' != cycleUnit">`cycle_unit` = #{cycleUnit},</if>
+            <if test="null != planCode and '' != planCode">`plan_code` = #{planCode}</if>
+        </set>
+        WHERE plan_code = #{planCode}
+    </update>
+    <select id="search" resultType="com.zhilianhua.ssicp.entity.response.ManualInspectionPlanVO">
+        SELECT mip.* , MIN(u.nick_name) as nick_name,
+        count(mio.outcome_code) as iterationCount,
+        count(CASE WHEN mio.`state` != 3 THEN 1 ELSE NULL END) as completedCount,
+        count(CASE WHEN mio.`state` in (1,2) THEN 1 ELSE NULL END) as anomalyCount,
+        count(CASE WHEN mio.`state` = 2 THEN 1 ELSE NULL END) as handledAnomalyCount
+        FROM manual_inspection_plan as mip join user as u on mip.responsible_name = u.name
+        join manual_inspection_outcome as mio on mio.plan_code = mip.plan_code
+        <include refid="searchCondition"></include>
+        group by mip.plan_code
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.order"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+
+    <select id="searchCount" resultType="long">
+        select count(*)
+        FROM manual_inspection_plan as mip
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="getByid" resultType="com.zhilianhua.ssicp.entity.db.ManualInspectionPlan">
+        select *
+        from manual_inspection_plan
+        where plan_code = #{id}
+    </select>
+</mapper>

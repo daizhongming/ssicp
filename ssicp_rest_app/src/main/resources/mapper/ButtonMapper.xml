@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.ButtonMapper">
+    <insert id="add">
+        INSERT INTO button value (#{id}, #{type}, #{description})
+    </insert>
+    <update id="update">
+        update button
+        set `type`      = #{type},
+            description = #{description}
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete
+        from button
+        where id = #{id}
+    </delete>
+    <select id="findAll" resultType="Button">
+        select *
+        from button
+    </select>
+    <select id="search" resultType="com.zhilianhua.ssicp.entity.db.Button">
+        select *
+        from button
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.order"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+
+    <select id="searchCount" resultType="long">
+        select count(*)
+        from button
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="findByid" resultType="com.zhilianhua.ssicp.entity.db.Button">
+        select *
+        from button
+        where id = #{id}
+    </select>
+
+    <sql id="searchCondition">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND description like concat('%', #{keyword}, '%')
+                or `type` like concat('%', #{keyword}, '%')
+                or `id` like concat('%', #{keyword}, '%')
+            </if>
+            <if test="type != null and type != ''">
+                AND `type` = #{type}
+            </if>
+        </where>
+    </sql>
+</mapper>

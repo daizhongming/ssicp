@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.DeviceMapper">
+
+    <insert id="saveBatch">
+        INSERT INTO `device` (`id`,`device_name`, `parent_device_type`, `device_type`, `device_code`)
+        VALUES
+        <foreach collection="devices" item="item" separator=",">
+            (#{item.id},#{item.deviceName}, #{item.parentDeviceType}, #{item.deviceType},
+            #{item.deviceCode})
+        </foreach>
+    </insert>
+    <insert id="insertInstrument">
+        insert into `device_instrument` (id, work_years, use_time, usage_duration, check_period, qc_date, pipe_inlet,
+                                         pipe_exit)
+        VALUES (#{id}, #{workYears}, #{useTime}, #{usageDuration}, #{checkPeriod}, #{qcDate},
+                #{pipeInlet}, #{pipeExit})
+    </insert>
+    <insert id="insertValve">
+        INSERT INTO device_valve (id, work_years, use_time, usage_duration, check_period, qc_date, pipe_inlet,
+                                  pipe_exit)
+        VALUES (#{id}, #{workYears}, #{useTime}, #{usageDuration}, #{checkPeriod}, #{qcDate},
+                #{pipeInlet}, #{pipeExit})
+    </insert>
+    <insert id="insertCompensator">
+        INSERT INTO device_compensator (id, work_years, use_time, usage_duration, check_period, qc_date, pipe_inlet,
+                                        pipe_exit)
+        VALUES (#{id}, #{workYears}, #{useTime}, #{usageDuration}, #{checkPeriod}, #{qcDate},
+                #{pipeInlet}, #{pipeExit})
+    </insert>
+    <insert id="insertSteamTraps">
+        INSERT INTO device_steam_traps
+        (id,
+         work_years,
+         use_time,
+         usage_duration,
+         check_period,
+         qc_date,
+         pid,
+         location_description)
+        VALUES (#{id},
+                #{workYears},
+                #{useTime},
+                #{usageDuration},
+                #{checkPeriod},
+                #{qcDate},
+                #{pid},
+                #{locationDescription})
+    </insert>
+    <insert id="insertElbowTree">
+        INSERT INTO device_elbow_tree (id, work_years, use_time, usage_duration, check_period, qc_date, pipe_inlet,
+                                       pipe_exit)
+        VALUES (#{id}, #{workYears}, #{useTime}, #{usageDuration}, #{checkPeriod}, #{qcDate},
+                #{pipeInlet}, #{pipeExit})
+    </insert>
+    <insert id="insertGasPoint">
+        insert into device_gas_point (`id`, `region`, `pid`)
+        values (#{id}, #{region}, #{pid})
+    </insert>
+    <update id="update">
+        UPDATE device
+        <set>
+            <if test="null != deviceName and '' != deviceName">device_name = #{deviceName},</if>
+            <if test="null != parentDeviceType and '' != parentDeviceType">parent_device_type = #{parentDeviceType},
+            </if>
+            <if test="null != deviceType and '' != deviceType">device_type = #{deviceType},</if>
+            <if test="null != deviceCode and '' != deviceCode">device_code = #{deviceCode},</if>
+            <if test="null != createdByName and '' != createdByName">created_by_name = #{createdByName},</if>
+            <if test="null != updatedByName and '' != updatedByName">updated_by_name = #{updatedByName},</if>
+            <if test="null != deleteFlag and '' != deleteFlag">delete_flag = #{deleteFlag},</if>
+            <if test="null != comments and '' != comments">comments = #{comments}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateInstrument">
+        UPDATE device_instrument
+        <set>
+            <if test="null != workYears">work_years = #{workYears},</if>
+            <if test="null != useTime">use_time = #{useTime},</if>
+            <if test="null != usageDuration">usage_duration = #{usageDuration},</if>
+            <if test="null != checkPeriod and '' != checkPeriod">check_period = #{checkPeriod},</if>
+            <if test="null != qcDate">qc_date = #{qcDate},</if>
+            <if test="null != pipeInlet and '' != pipeInlet">pipe_inlet = #{pipeInlet},</if>
+            <if test="null != pipeExit and '' != pipeExit">pipe_exit = #{pipeExit}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateValve">
+        UPDATE device_valve
+        <set>
+            <if test="null != workYears">work_years = #{workYears},</if>
+            <if test="null != useTime">use_time = #{useTime},</if>
+            <if test="null != usageDuration">usage_duration = #{usageDuration},</if>
+            <if test="null != checkPeriod and '' != checkPeriod">check_period = #{checkPeriod},</if>
+            <if test="null != qcDate">qc_date = #{qcDate},</if>
+            <if test="null != pipeInlet and '' != pipeInlet">pipe_inlet = #{pipeInlet},</if>
+            <if test="null != pipeExit and '' != pipeExit">pipe_exit = #{pipeExit}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateCompensator">
+        UPDATE device_compensator
+        <set>
+            <if test="null != workYears">work_years = #{workYears},</if>
+            <if test="null != useTime">use_time = #{useTime},</if>
+            <if test="null != usageDuration">usage_duration = #{usageDuration},</if>
+            <if test="null != checkPeriod and '' != checkPeriod">check_period = #{checkPeriod},</if>
+            <if test="null != qcDate">qc_date = #{qcDate},</if>
+            <if test="null != pipeInlet and '' != pipeInlet">pipe_inlet = #{pipeInlet},</if>
+            <if test="null != pipeExit and '' != pipeExit">pipe_exit = #{pipeExit}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateSteamTraps">
+        UPDATE device_steam_traps
+        <set>
+            <if test="null != workYears">work_years = #{workYears},</if>
+            <if test="null != useTime">use_time = #{useTime},</if>
+            <if test="null != usageDuration ">usage_duration = #{usageDuration},</if>
+            <if test="null != checkPeriod and '' != checkPeriod">check_period = #{checkPeriod},</if>
+            <if test="null != qcDate">qc_date = #{qcDate},</if>
+            <if test="null != pid and '' != pid">pid = #{pid},</if>
+            <if test="null != locationDescription and '' != locationDescription">location_description =
+                #{locationDescription}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateElbowTree">
+        UPDATE device_elbow_tree
+        <set>
+            <if test="null != workYears">work_years = #{workYears},</if>
+            <if test="null != useTime">use_time = #{useTime},</if>
+            <if test="null != usageDuration">usage_duration = #{usageDuration},</if>
+            <if test="null != checkPeriod and '' != checkPeriod">check_period = #{checkPeriod},</if>
+            <if test="null != qcDate">qc_date = #{qcDate},</if>
+            <if test="null != pipeInlet and '' != pipeInlet">pipe_inlet = #{pipeInlet},</if>
+            <if test="null != pipeExit and '' != pipeExit">pipe_exit = #{pipeExit}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateGasPoint">
+        UPDATE device_gas_point
+        <set>
+            <if test="null != region and '' != region">region = #{region},</if>
+            <if test="null != pid and '' != pid">pid = #{pid}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectList" resultType="java.util.Map">
+        select id as dictValue, device_name as dictLabel
+        from device
+        where parent_device_type = #{i}
+    </select>
+
+    <sql id="searchCondition">
+        <where>
+            d.delete_flag = 0
+            <if test="keyword!=null and keyword != ''">
+                and ((d.device_name like CONCAT('%', #{keyword}, '%')
+                or d.device_code like CONCAT('%', #{keyword}, '%')))
+            </if>
+        </where>
+    </sql>
+
+    <select id="getByid" resultType="Device">
+        select *
+        from device
+        where id = #{id}
+        and delete_flag = 0
+    </select>
+    <select id="getInstrumentByid" resultType="DeviceInstrument">
+        select *
+        from device_instrument
+        where id = #{id}
+    </select>
+    <select id="pageListInstruments" resultType="com.zhilianhua.ssicp.entity.response.DeviceInstrumentVO">
+        select *
+        from device as d join device_instrument as di
+        on d.id = di.id
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+
+    <select id="pageListInstrumentsCount" resultType="long">
+        select COUNT(*)
+        from device as d join device_instrument as di
+        on d.id = di.id
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="pageListValves" resultType="com.zhilianhua.ssicp.entity.response.DeviceValveVO">
+        select *
+        from device as d join device_valve as dv
+        on d.id = dv.id
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+
+    <select id="pageListValvesCount" resultType="long">
+        select COUNT(*)
+        from device as d join device_valve as dv
+        on d.id = dv.id
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="getValveByid" resultType="DeviceValve">
+        select *
+        from device_valve
+        where id = #{id}
+    </select>
+    <select id="pageListCompensators" resultType="com.zhilianhua.ssicp.entity.response.DeviceCompensatorVO">
+        select *
+        from device as d join device_compensator as dc
+        on d.id = dc.id
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+    <select id="pageListCompensatorsCount" resultType="long">
+        select COUNT(*)
+        from device as d join device_compensator as dc
+        on d.id = dc.id
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="getCompensatorByid" resultType="DeviceCompensator">
+        select *
+        from device_compensator
+        where id = #{id}
+    </select>
+    <select id="pageListSteamTraps" resultType="com.zhilianhua.ssicp.entity.response.DeviceSteamTrapsVO">
+        select *
+        from device as d join device_steam_traps as dst
+        on d.id = dst.id
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+    <select id="pageListSteamTrapsCount" resultType="long">
+        select COUNT(*)
+        from device as d join device_steam_traps as dst
+        on d.id = dst.id
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="getSteamTrapsByid" resultType="DeviceSteamTraps">
+        select *
+        from device_steam_traps
+        where id = #{id}
+    </select>
+    <select id="pageListElbowTree" resultType="com.zhilianhua.ssicp.entity.response.DeviceElbowTreeVO">
+        select *
+        from device as d join device_elbow_tree as det
+        on d.id = det.id
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+    <select id="pageListElbowTreeCount" resultType="long">
+        select count(*)
+        from device as d join device_elbow_tree as det
+        on d.id = det.id
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+    <select id="getElbowTreeByid" resultType="DeviceElbowTree">
+        select *
+        from device_elbow_tree
+        where id = #{id}
+    </select>
+    <select id="deviceCountAnalyse" resultType="com.zhilianhua.ssicp.entity.response.AnalyseEntity">
+        SELECT dict.dict_label type,
+               count(*) count
+        FROM
+            device de
+            LEFT JOIN dict_data dict
+        ON dict.type_code = 'device_type'
+            AND dict.dict_value = de.parent_device_type
+        WHERE
+            de.delete_flag = 0
+        GROUP BY
+            dict.dict_label
+    </select>
+    <select id="pageListGasPoint" resultType="com.zhilianhua.ssicp.entity.response.DeviceGasPointVO">
+        select *
+        from device as d join device_gas_point as dgp
+        on d.id = dgp.id
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+    <select id="pageListGasPointCount" resultType="long">
+        select COUNT(*)
+        from device as d join device_gas_point as dgp
+        on d.id = dgp.id
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="getGasPointByid" resultType="DeviceGasPoint">
+        select *
+        from device_gas_point
+        where id = #{id}
+    </select>
+    <select id="getInstrumentBypid" resultType="com.zhilianhua.ssicp.entity.response.DeviceInstrumentVO">
+        select *
+        from device as d
+                 join device_instrument as di
+                      on d.id = di.id
+        where d.delete_flag = 0
+          and (pipe_inlet = #{pid}
+            or pipe_exit = #{pid})
+    </select>
+    <select id="getValveBypid" resultType="com.zhilianhua.ssicp.entity.response.DeviceValveVO">
+        select *
+        from device as d
+                 join device_valve as dv
+                      on d.id = dv.id
+        where d.delete_flag = 0
+          and (pipe_inlet = #{pid}
+            or pipe_exit = #{pid})
+    </select>
+    <select id="getSteamTrapBypid" resultType="com.zhilianhua.ssicp.entity.response.DeviceSteamTrapsVO">
+        select *
+        from device as d
+                 join device_steam_traps as dst
+                      on d.id = dst.id
+        where d.delete_flag = 0
+          and pid = #{pid}
+    </select>
+    <select id="getElbowTreeBypid" resultType="com.zhilianhua.ssicp.entity.response.DeviceElbowTreeVO">
+        select *
+        from device as d
+                 join device_elbow_tree as det
+                      on d.id = det.id
+        where d.delete_flag = 0
+          and (pipe_inlet like CONCAT('%', #{pid}, '%')
+            or pipe_exit like CONCAT('%', #{pid}, '%'))
+    </select>
+    <select id="getCompensatorBypid" resultType="com.zhilianhua.ssicp.entity.response.DeviceCompensatorVO">
+        select *
+        from device as d
+                 join device_compensator as dc
+                      on d.id = dc.id
+        where d.delete_flag = 0
+          and (pipe_inlet = #{pid}
+            or pipe_exit = #{pid})
+    </select>
+    <select id="getGasPointBypid" resultType="com.zhilianhua.ssicp.entity.response.DeviceGasPointVO">
+        select *
+        from device as d
+                 join device_gas_point as dgp
+                      on d.id = dgp.id
+        where d.parent_device_type = #{c}
+          and pid = #{pid}
+          and d.delete_flag = 0
+    </select>
+    <select id="findAll" resultType="Device">
+        select *
+        from device
+        where delete_flag = 0
+    </select>
+
+    <select id="findAllInstruments" resultType="com.zhilianhua.ssicp.entity.response.DeviceInstrumentVO">
+        SELECT
+        di.*, d.device_name
+        FROM
+        device_instrument di,
+        device d
+        WHERE
+        di.id = d.id
+        AND d.parent_device_type = '1'
+        AND d.delete_flag = 0
+    </select>
+    <select id="findAllValves" resultType="com.zhilianhua.ssicp.entity.response.DeviceValveVO">
+        SELECT
+        dv.*, d.device_name
+        FROM
+        device_valve dv,
+        device d
+        WHERE
+        dv.id = d.id
+        AND d.parent_device_type = '2'
+        AND d.delete_flag = 0
+    </select>
+    <select id="findAllCompensators" resultType="com.zhilianhua.ssicp.entity.response.DeviceCompensatorVO">
+        SELECT
+        dc.*, d.device_name
+        FROM
+        device_compensator dc,
+        device d
+        WHERE
+        dc.id = d.id
+        AND d.parent_device_type = '7'
+        AND d.delete_flag = 0
+    </select>
+    <select id="findAllSteamTraps" resultType="com.zhilianhua.ssicp.entity.response.DeviceSteamTrapsVO">
+        SELECT
+        dst.*, d.device_name
+        FROM
+        device_steam_traps dst,
+        device d
+        WHERE
+        dst.id = d.id
+        AND d.delete_flag = 0
+        AND d.parent_device_type = '3'
+    </select>
+    <select id="findAllPipes" resultType="Pipe">
+        SELECT
+        p.*
+        FROM
+        pipe p,
+        device d
+        WHERE
+        p.id = d.id
+        AND p.delete_flag = 0
+        AND d.delete_flag = 0
+        AND d.parent_device_type = '4'
+    </select>
+    <select id="findAllElbows" resultType="com.zhilianhua.ssicp.entity.response.DeviceElbowTreeVO">
+        SELECT
+        det.*, d.device_name
+        FROM
+        device_elbow_tree det,
+        device d
+        WHERE
+        det.id = d.id
+        AND d.delete_flag = 0
+        AND d.parent_device_type = '9'
+    </select>
+    <select id="findAllTees" resultType="com.zhilianhua.ssicp.entity.response.DeviceElbowTreeVO">
+        SELECT
+        det.*, d.device_name
+        FROM
+        device_elbow_tree det,
+        device d
+        WHERE
+        det.id = d.id
+        AND d.delete_flag = 0
+        AND d.parent_device_type = '8'
+    </select>
+    <select id="findAllProduction" resultType="com.zhilianhua.ssicp.entity.response.DeviceGasPointVO">
+        SELECT
+        dgp.*, d.device_name
+        FROM
+        device_gas_point dgp,
+        device d
+        WHERE
+        dgp.id = d.id
+        AND d.delete_flag = 0
+        AND d.parent_device_type = '5'
+    </select>
+    <select id="findAllConsumption" resultType="com.zhilianhua.ssicp.entity.response.DeviceGasPointVO">
+        SELECT
+        dgp.*, d.device_name
+        FROM
+        device_gas_point dgp,
+        device d
+        WHERE
+        dgp.id = d.id
+        AND d.delete_flag = 0
+        AND d.parent_device_type = '6'
+    </select>
+</mapper>

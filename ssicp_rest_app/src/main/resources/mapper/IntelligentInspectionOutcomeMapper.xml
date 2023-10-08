@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.IntelligentInspectionOutcomeMapper">
+    <sql id="Base_Column_List">
+        outcome_code
+        ,
+        plan_code,
+        pipe_quantity,
+        yibiao,
+        famen,
+        shushuifa,
+        guandaun,
+        chanqidian,
+        yongqidian,
+        total_index_number,
+        confirm,
+        responsible_name,
+        create_time,
+        update_time,
+        delete_flag,
+        comments,
+        iteration_number
+    </sql>
+
+    <update id="update">
+        UPDATE intelligent_inspection_outcome
+        <set>
+            <if test="null != planCode and '' != planCode">plan_code = #{planCode},</if>
+            <if test="null != iterationNumber and '' != iterationNumber">iteration_number = #{iterationNumber},</if>
+            <if test="null != state and '' != state">state = #{state},</if>
+            <if test="null != responsibleName and '' != responsibleName">responsible_name = #{responsibleName},</if>
+            <if test="null != createTime and '' != createTime">create_time = #{createTime},</if>
+            <if test="null != updateTime and '' != updateTime">update_time = #{updateTime},</if>
+            <if test="null != deleteFlag and '' != deleteFlag">delete_flag = #{deleteFlag},</if>
+            <if test="null != comments and '' != comments">comments = #{comments}</if>
+        </set>
+        WHERE outcome_code = #{outcomeCode}
+    </update>
+
+    <select id="search" resultType="com.zhilianhua.ssicp.entity.response.IntelligentInspectionOutcomeVO">
+        SELECT
+        iio.*,
+        u.nick_name as nickName,
+        COUNT(DISTINCT CASE WHEN d.parent_device_type = 1 THEN d.id END) AS instrumentCount,
+        COUNT(DISTINCT CASE WHEN d.parent_device_type = 2 THEN d.id END) AS steamTrapsCount,
+        COUNT(DISTINCT CASE WHEN d.parent_device_type = 3 THEN d.id END) AS valveCount,
+        COUNT(DISTINCT CASE WHEN d.parent_device_type = 4 THEN d.id END) AS pipeCount,
+        COUNT(DISTINCT CASE WHEN d.parent_device_type = 5 THEN d.id END) AS steamProductionPointCount,
+        COUNT(DISTINCT CASE WHEN d.parent_device_type = 6 THEN d.id END) AS withSteamSpotsCount
+        FROM
+        intelligent_inspection_outcome AS `iio`
+        LEFT JOIN
+        inteligent_outcome_details AS iod ON iio.outcome_code = iod.outcome_code
+        LEFT JOIN
+        device AS d ON iod.device_id = d.id
+        LEFT JOIN
+        device_alarm AS da ON iod.device_id = da.device_id AND iod.`index` = da.`index`
+        LEFT JOIN
+        user AS u ON `iio`.responsible_name = u.name
+        <include refid="searchCondition"/>
+        GROUP BY `iio`.outcome_code, `iio`.create_time, u.nick_name
+        ORDER BY
+        iio.create_time DESC
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"/>
+
+    </select>
+    <sql id="searchCondition">
+        <where>
+            <if test="planCode!=null and planCode!=''">
+                and iio.plan_code = #{planCode}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                and iio.plan_name like concat('%',#{keyword},'%')
+            </if>
+            <if test="startTime!=null and startTime!=''">
+                and iio.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime!=null and endTime!=''">
+                and iio.create_time &lt;= #{endTime}
+            </if>
+            <if test="responsibleName!=null and responsibleName!=''">
+                and iio.responsible_name = #{responsibleName}
+            </if>
+            <if test="status!=null and status!=''">
+                and iio.`state` in
+                <foreach collection="status" item="statu" open="(" separator="," close=")">
+                    #{statu}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <select id="searchCount" resultType="long">
+        select count(*)
+        FROM intelligent_inspection_outcome as iio
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="load" resultType="com.zhilianhua.ssicp.entity.db.IntelligentInspectionOutcome">
+        select *
+        from intelligent_inspection_outcome
+        where outcome_code = #{outcomeCode}
+    </select>
+    <select id="analyse" resultType="com.zhilianhua.ssicp.entity.response.AnalyseInspection">
+        SELECT count(*)        total,
+               sum(state != 0) error_count
+        FROM intelligent_inspection_outcome
+    </select>
+
+    <select id="findHalfMonth" resultType="com.zhilianhua.ssicp.entity.response.IntelligentInspectionOutcomeAppVo">
+        SELECT o2.*,
+               p.plan_name,
+               u.nick_name responsible_nick_name
+        FROM (SELECT plan_code,
+                     MAX(create_time) create_time
+              FROM intelligent_inspection_outcome o
+              WHERE o.create_time > NOW() - INTERVAL 15 DAY
+              GROUP BY
+                  plan_code) o1
+                 LEFT JOIN intelligent_inspection_outcome o2 ON o2.plan_code = o1.plan_code
+            AND o2.create_time = o1.create_time
+                 LEFT JOIN intelligent_inspection_plan p ON p.plan_code = o2.plan_code
+                 LEFT JOIN USER u ON u.`name` = o2.responsible_name
+    </select>
+
+    <select id="getInspectionData"
+            resultType="com.zhilianhua.ssicp.entity.response.IntelligentInspectionOutcomeAppVo">
+        SELECT o2.*,
+               p.plan_name,
+               u.nick_name responsible_nick_name
+        FROM intelligent_inspection_outcome o2
+                 LEFT JOIN intelligent_inspection_plan p ON p.plan_code = o2.plan_code
+                 LEFT JOIN USER u ON u.`name` = o2.responsible_name
+        WHERE o2.plan_code = #{planCode}
+        ORDER BY o2.create_time DESC LIMIT 1
+    </select>
+    <select id="queryExceptionToDos" resultType="com.zhilianhua.ssicp.entity.response.InspectionExceptionsVO">
+        select outcome_code     as outcomeCode,
+               plan_name        as planName,
+               `state`          as `state`,
+               responsible_name as responsibleName,
+               create_time      as createTime
+        from intelligent_inspection_outcome
+        where `state` = 1
+    </select>
+    <select id="findAllErrorByUser"
+            resultType="com.zhilianhua.ssicp.entity.response.IntelligentInspectionOutcomeAppVo">
+        SELECT o2.*,
+               p.plan_name
+        FROM (SELECT plan_code,
+                     MAX(create_time) create_time
+              FROM intelligent_inspection_outcome o
+              WHERE o.responsible_name = #{responsibleName}
+              GROUP BY plan_code) o1
+                 LEFT JOIN intelligent_inspection_outcome o2 ON o2.plan_code = o1.plan_code
+            AND o2.create_time = o1.create_time
+                 LEFT JOIN intelligent_inspection_plan p ON p.plan_code = o2.plan_code
+        WHERE o2.state = 1
+    </select>
+    <select id="todoAnalyse" resultType="com.zhilianhua.ssicp.entity.response.TodoAnalyseEntity">
+        SELECT
+        IFNULL(
+        sum(o2.state = 1 OR o2.state = 2),
+        0
+        ) total,
+        IFNULL(sum(o2.state = 1), 0) unHandle,
+        IFNULL(sum(o2.state = 2), 0) handled
+        FROM
+        (
+        SELECT
+        plan_code,
+        max(create_time) create_time
+        FROM
+        intelligent_inspection_outcome
+        GROUP BY
+        plan_code
+        ) o1
+        LEFT JOIN intelligent_inspection_outcome o2 ON o2.plan_code = o1.plan_code
+        AND o2.create_time = o1.create_time
+        <where>
+            <if test="responsibleName!=null and responsibleName!=''">
+                o2.responsible_name=#{responsibleName}
+            </if>
+        </where>
+    </select>
+    <select id="getdisposeByoutcomeCode" resultType="com.zhilianhua.ssicp.entity.db.AlarmactionInfo">
+        SELECT
+            ai.*,
+            iod.device_id
+        FROM
+            inteligent_outcome_details AS iod
+                JOIN
+            alarmaction_info AS ai ON iod.info_id = ai.id
+                JOIN
+            device_alarm AS da ON iod.device_id = da.device_id AND iod.`index` = da.`index`
+                JOIN
+            device AS d ON iod.device_id = d.id
+        WHERE
+            iod.outcome_code = #{outcomeCode}
+
+    </select>
+
+    <insert id="insert">
+        INSERT INTO intelligent_inspection_outcome
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            outcome_code,
+            plan_code,
+            plan_name,
+            <if test="null != iterationNumber and '' != iterationNumber">
+                iteration_number,
+            </if>
+            <if test="null != state and '' != state">
+                `state`,
+            </if>
+            <if test="null != responsibleName and '' != responsibleName">
+                responsible_name,
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                delete_flag,
+            </if>
+            <if test="null != comments and '' != comments">
+                comments
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{outcomeCode},
+            #{planCode},
+            #{planName},
+            <if test="null != iterationNumber and '' != iterationNumber">
+                #{iterationNumber},
+            </if>
+            <if test="null != state and '' != state">
+                #{state},
+            </if>
+            <if test="null != responsibleName and '' != responsibleName">
+                #{responsibleName},
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                #{deleteFlag},
+            </if>
+            <if test="null != comments and '' != comments">
+                #{comments}
+            </if>
+        </trim>
+
+    </insert>
+</mapper>

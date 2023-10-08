@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.KnowledgeBaseMapper">
+    <sql id="searchCondition">
+        <where>
+            delete_flag = 0
+            <if test="keyword!=null and keyword!=''">
+                and title like concat('%',#{keyword},'%')
+                or question like concat('%',#{keyword},'%')
+                or scheme like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </sql>
+    <insert id="insert">
+        INSERT INTO knowledge_base
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="null != title and '' != title">
+                title,
+            </if>
+            <if test="null != question and '' != question">
+                question,
+            </if>
+            <if test="null != scheme and '' != scheme">
+                scheme,
+            </if>
+            <if test="null != responsibleName and '' != responsibleName">
+                responsible_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            <if test="null != title and '' != title">
+                #{title},
+            </if>
+            <if test="null != question and '' != question">
+                #{question},
+            </if>
+            <if test="null != scheme and '' != scheme">
+                #{scheme},
+            </if>
+            <if test="null != responsibleName and '' != responsibleName">
+                #{responsibleName},
+            </if>
+        </trim>
+    </insert>
+    <update id="update">
+        UPDATE knowledge_base
+        <set>
+            <if test="null != title and '' != title">title = #{title},</if>
+            <if test="null != question and '' != question">question = #{question},</if>
+            <if test="null != scheme and '' != scheme">scheme = #{scheme},</if>
+            <if test="null != responsibleName and '' != responsibleName">responsible_name = #{responsibleName},</if>
+            <if test="null != readCount">read_count = #{readCount},</if>
+            <if test="null != deleteFlag and '' != deleteFlag">delete_flag = #{deleteFlag}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <select id="findPage" resultType="com.zhilianhua.ssicp.entity.response.KnowledgeBaseVO">
+        select *
+        from knowledge_base
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+    <select id="findPageCount" resultType="long">
+        select count(*)
+        from knowledge_base
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="selectById" resultType="com.zhilianhua.ssicp.entity.db.KnowledgeBase">
+        select *
+        from knowledge_base
+        where id = #{id}
+    </select>
+    <select id="getPushRecords" resultType="com.zhilianhua.ssicp.entity.db.KonwledgeBusiness">
+        select *
+        from konwledge_business
+        where base_id = #{id}
+    </select>
+    <select id="getById" resultType="com.zhilianhua.ssicp.entity.db.KnowledgeBase">
+        select *
+        from knowledge_base
+        where id = #{id}
+    </select>
+</mapper>

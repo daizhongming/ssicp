@@ -1,0 +1,32 @@
+[
+  {
+    "name": "XXXXX01",
+    "id": "121",
+    "type": "厂内直供",
+    "flow": 71.5,
+    "pressure": 0.99,
+    "temperature": 80,
+    "enthalphy": 2803.00,
+    "heat": 200.45
+  },
+  {
+    "name": "XXXXX02",
+    "id": "132",
+    "type": "厂外来气",
+    "flow": 71.5,
+    "pressure": 0.99,
+    "temperature": 80,
+    "enthalphy": 2803.00,
+    "heat": 200.45
+  },
+  {
+    "name": "XXXXX03",
+    "id": "35",
+    "type": "厂内直供",
+    "flow": 71.5,
+    "pressure": 0.99,
+    "temperature": 80,
+    "enthalphy": 2803.00,
+    "heat": 200.45
+  }
+]

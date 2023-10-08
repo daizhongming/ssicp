@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.DictTypeMapper">
+    <insert id="insert" useGeneratedKeys="true" parameterType="com.zhilianhua.ssicp.entity.db.DictType">
+        INSERT INTO dict_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != code and '' != code">
+                code,
+            </if>
+            <if test="null != dictName and '' != dictName">
+                dict_name,
+            </if>
+            <if test="null != status and '' != status">
+                status,
+            </if>
+            <if test="null != createBy and '' != createBy">
+                create_by,
+            </if>
+            <if test="null != updateBy and '' != updateBy">
+                update_by,
+            </if>
+            expand1,
+            expand_type1,
+            expand2,
+            expand_type2,
+            expand3,
+            expand_type3,
+            privileges,
+            <if test="null != remark and '' != remark">
+                remark
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="null != code and '' != code">
+                #{code},
+            </if>
+            <if test="null != dictName and '' != dictName">
+                #{dictName},
+            </if>
+            <if test="null != status and '' != status">
+                #{status},
+            </if>
+            <if test="null != createBy and '' != createBy">
+                #{createBy},
+            </if>
+            <if test="null != updateBy and '' != updateBy">
+                #{updateBy},
+            </if>
+            #{expand1},
+            #{expandType1},
+            #{expand2},
+            #{expandType2},
+            #{expand3},
+            #{expandType3},
+            #{privileges},
+            <if test="null != remark and '' != remark">
+                #{remark}
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM dict_type
+        WHERE code = #{code}
+    </delete>
+
+    <update id="update" parameterType="com.zhilianhua.ssicp.entity.db.DictType">
+        UPDATE dict_type
+        <set>
+            <if test="null != code and '' != code">code = #{code},</if>
+            <if test="null != dictName and '' != dictName">dict_name = #{dictName},</if>
+            <if test="null != status and '' != status">status = #{status},</if>
+            <if test="null != createBy and '' != createBy">create_by = #{createBy},</if>
+            <if test="null != updateBy and '' != updateBy">update_by = #{updateBy},</if>
+            expand1 = #{expand1},
+            expand2 = #{expand2},
+            expand3 = #{expand3},
+            expand_type1 = #{expandType1},
+            expand_type2 = #{expandType2},
+            expand_type3 = #{expandType3},
+            privileges = #{privileges},
+            remark = #{remark}
+        </set>
+        WHERE code = #{code}
+    </update>
+
+    <sql id="searchCondition">
+        <where>
+            <if test="null != dictName and '' != dictName">
+                and `dict_name` like CONCAT('%', #{dictName}, '%')
+            </if>
+            <if test="null != status and '' != status">
+                and `status` = #{status}
+            </if>
+        </where>
+    </sql>
+
+    <select id="load" resultType="DictType">
+        SELECT
+        *
+        FROM dict_type
+        WHERE code = #{code}
+    </select>
+
+    <select id="pageList" resultType="DictType">
+        SELECT
+        *
+        FROM dict_type
+        <include refid="searchCondition"></include>
+        ORDER BY create_time
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="pageListCount" resultType="long">
+        SELECT count(1)
+        FROM dict_type
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="findAll" resultType="DictType">
+        SELECT
+        *
+        FROM dict_type
+    </select>
+</mapper>

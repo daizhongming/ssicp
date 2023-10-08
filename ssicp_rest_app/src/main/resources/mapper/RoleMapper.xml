@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.RoleMapper">
+    <sql id="searchCondition">
+        <where>
+            <if test="keyword!=null and keyword != ''">
+                `title` like CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="com.zhilianhua.ssicp.entity.db.Role">
+        INSERT INTO role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != name and '' != name">
+                name,
+            </if>
+            <if test="null != title and '' != title">
+                title,
+            </if>
+            <if test="null != createBy and '' != createBy">
+                create_by,
+            </if>
+            <if test="null != updateBy and '' != updateBy">
+                update_by,
+            </if>
+            <if test="null != remark and '' != remark">
+                remark
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="null != name and '' != name">
+                #{name},
+            </if>
+            <if test="null != title and '' != title">
+                #{title},
+            </if>
+            <if test="null != createBy and '' != createBy">
+                #{createBy},
+            </if>
+            <if test="null != updateBy and '' != updateBy">
+                #{updateBy},
+            </if>
+            <if test="null != remark and '' != remark">
+                #{remark}
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="del">
+        DELETE FROM role
+        WHERE `name` = #{name}
+    </delete>
+
+    <update id="update" parameterType="com.zhilianhua.ssicp.entity.db.Role">
+        UPDATE role
+        <set>
+            <if test="null != name and '' != name">name = #{name},</if>
+            <if test="null != title and '' != title">title = #{title},</if>
+            <if test="null != createBy and '' != createBy">create_by = #{createBy},</if>
+            <if test="null != updateBy and '' != updateBy">update_by = #{updateBy},</if>
+            <if test="null != remark and '' != remark">remark = #{remark}</if>
+        </set>
+        WHERE `name` = #{name}
+    </update>
+
+
+    <select id="load" resultType="Role">
+        SELECT *
+        FROM role
+        WHERE `name` = #{name}
+    </select>
+
+    <select id="search" resultType="Role">
+        SELECT *
+        FROM role
+        <include refid="searchCondition"></include>
+        order by system_flag
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="searchCount" resultType="long">
+        SELECT count(*)
+        FROM role
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="findAll" resultType="com.zhilianhua.ssicp.entity.db.Role">
+        select * from role
+    </select>
+    <select id="getByTitle" resultType="com.zhilianhua.ssicp.entity.db.Role">
+        SELECT *
+        FROM role
+        WHERE `title` = #{title}
+    </select>
+
+
+</mapper>

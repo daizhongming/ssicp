@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.DictDataMapper">
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="com.zhilianhua.ssicp.entity.db.DictData">
+        INSERT INTO dict_data
+            (
+                dict_sort,
+                dict_label,
+                dict_value,
+                type_code,
+                status,
+                parent_id,
+                create_by,
+                update_by,
+                remark,
+                expand1,
+                expand2,
+                expand3
+            )
+        values
+            (
+                #{dictSort},
+                #{dictLabel},
+                #{dictValue},
+                #{typeCode},
+                #{status},
+                #{parentId},
+                #{createBy},
+                #{updateBy},
+                #{remark},
+                #{expand1},
+                #{expand2},
+                #{expand3}
+            )
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM dict_data
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.zhilianhua.ssicp.entity.db.DictData">
+        UPDATE dict_data
+        set
+        dict_sort = #{dictSort},
+        dict_label = #{dictLabel},
+        dict_value = #{dictValue},
+        type_code = #{typeCode},
+        status = #{status},
+        parent_id = #{parentId},
+        create_by = #{createBy},
+        update_by = #{updateBy},
+        expand1 = #{expand1},
+        expand2 = #{expand2},
+        expand3 = #{expand3},
+        remark = #{remark}
+        WHERE id = #{id}
+    </update>
+
+
+    <select id="load" parameterType="com.zhilianhua.ssicp.entity.request.DictTypeParams">
+        SELECT
+        *
+        FROM dict_data
+        WHERE id = #{id}
+    </select>
+    <sql id="searchCondition">
+        <where>
+            `type_code` = #{typecode}
+            <if test="null != dictName and '' != dictName">
+                and `dict_label` like CONCAT('%', #{dictName}, '%')
+            </if>
+            <if test="null != status and '' != status">
+                and `status` = #{status}
+            </if>
+        </where>
+    </sql>
+
+    <select id="pageList" parameterType="com.zhilianhua.ssicp.entity.request.DictTypeParams">
+        SELECT
+        *
+        FROM dict_data
+        <include refid="searchCondition"></include>
+        ORDER BY dict_sort
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="pageListCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM dict_data
+        <include refid="searchCondition"></include>
+    </select>
+
+    <select id="listAll">
+        SELECT
+        *
+        FROM dict_data
+        <where>
+            `type_code` in
+            <foreach item="typecode" collection="typecodes" open="(" separator="," close=")">
+                #{typecode}
+            </foreach>
+            and `status` = 0
+        </where>
+    </select>
+    <select id="selectverify">
+        select count(1)
+        from dict_data
+        <where>
+            `type_code` = #{typeCode} and
+            `dict_value` = #{dictValue}
+        </where>
+    </select>
+    <select id="findByTypeCode" resultType="DictData">
+        SELECT
+        *
+        FROM dict_data
+        where type_code=#{typeCode}
+        and `status` = '0'
+    </select>
+    <select id="findAll" resultType="DictData">
+        SELECT
+        *
+        FROM dict_data
+        where `status` = '0'
+        ORDER BY dict_sort
+    </select>
+
+</mapper>

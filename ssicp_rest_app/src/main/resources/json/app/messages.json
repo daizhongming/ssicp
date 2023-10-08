@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "title": "02管段温度高高报",
+    "createTime": "2023-08-15 09:27:00",
+    "updateTime": "2023-08-15 09:27:00",
+    "userName": "root",
+    "readFlag": 0,
+    "type": "alarm2",
+    "businessId": "1"
+  },
+  {
+    "id": 2,
+    "title": "02管段温度高高报",
+    "createTime": "2023-08-15 09:27:00",
+    "updateTime": "2023-08-15 09:27:00",
+    "userName": "root",
+    "readFlag": 1,
+    "type": "alarm1",
+    "businessId": "2"
+  },
+  {
+    "id": 3,
+    "title": "XXX巡检计划异常",
+    "createTime": "2023-08-15 09:27:00",
+    "updateTime": "2023-08-15 09:27:00",
+    "userName": "admin",
+    "readFlag": 1,
+    "type": "inspection",
+    "businessId": "3"
+  },
+  {
+    "id": 4,
+    "title": "日常巡检",
+    "createTime": "2023-08-15 09:27:00",
+    "updateTime": "2023-08-15 09:27:00",
+    "userName": "zhangsan",
+    "readFlag": 1,
+    "type": "dayCheck",
+    "businessId": "4"
+  },
+  {
+    "id": 5,
+    "title": "年度检查",
+    "createTime": "2023-08-15 09:27:00",
+    "updateTime": "2023-08-15 09:27:00",
+    "userName": "zhangsan",
+    "readFlag": 1,
+    "type": "yearCheck",
+    "businessId": "5"
+  }
+]

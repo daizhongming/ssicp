@@ -1,0 +1,17 @@
+{
+  "alarm": {
+    "total": 36,
+    "handled": 20,
+    "unHandle": 16
+  },
+  "error": {
+    "total": 7,
+    "handled": 2,
+    "unHandle": 5
+  },
+  "manualInspection": {
+    "total": 14,
+    "handled": 12,
+    "unHandle": 2
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "steam": [
+    {
+      "name": "产气量",
+      "value": 51.08,
+      "color": "#00BBFF"
+    },
+    {
+      "name": "用气量",
+      "value": 45.96,
+      "color": "#008000"
+    },
+    {
+      "name": "损失量",
+      "value": 5.12,
+      "color": "#FF0000"
+    }
+  ],
+  "sufficientFlag": 0
+}

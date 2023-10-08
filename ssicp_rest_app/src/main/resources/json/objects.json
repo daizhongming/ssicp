@@ -1,0 +1,187 @@
+[
+  {
+    "id": "pipe1",
+    "type": "pipe",
+    "name": "管段1",
+    "designPressure": 0.35,
+    "pressureDrop": -1,
+    "temperatureDrop": -1,
+    "flowVelocity": -1,
+    "flowDirection": [
+      "elbow1",
+      "elbow2"
+    ],
+    "condensate": 0,
+    "insulationLayer": -1
+  },
+  {
+    "id": "pipe2",
+    "type": "pipe",
+    "name": "管段2",
+    "designPressure": 1.0,
+    "pressureDrop": 10,
+    "temperatureDrop": 10,
+    "flowVelocity": 7,
+    "flowDirection": [
+      "elbow2",
+      "elbow3"
+    ],
+    "condensate": 1,
+    "insulationLayer": 1
+  },
+  {
+    "id": "pipe3",
+    "type": "pipe",
+    "name": "管段3",
+    "designPressure": 3.7,
+    "pressureDrop": 20,
+    "temperatureDrop": 50,
+    "flowVelocity": 11,
+    "flowDirection": [
+      "elbow3",
+      "elbow4"
+    ],
+    "condensate": 0,
+    "insulationLayer": 2
+  },
+  {
+    "id": "pipe4",
+    "type": "pipe",
+    "name": "管段4",
+    "designPressure": 12.0,
+    "pressureDrop": 25,
+    "temperatureDrop": 150,
+    "flowVelocity": 25,
+    "flowDirection": [
+      "elbow4",
+      "elbow5"
+    ],
+    "condensate": 1,
+    "insulationLayer": 3
+  },
+  {
+    "id": "pipe5",
+    "type": "pipe",
+    "name": "管段5",
+    "designPressure": 0.35,
+    "pressureDrop": 21,
+    "temperatureDrop": 21,
+    "flowVelocity": 70,
+    "flowDirection": [
+      "elbow5",
+      "elbow6"
+    ],
+    "condensate": 1,
+    "insulationLayer": 1
+  },
+  {
+    "id": "instrument1",
+    "type": "instrument",
+    "name": "仪表1",
+    "temperature": 20,
+    "flow": 20,
+    "pressure": 20
+  },
+  {
+    "id": "valve1",
+    "type": "valve",
+    "name": "阀门1",
+    "open": false
+  },
+  {
+    "id": "trap1",
+    "type": "trap",
+    "name": "疏水阀1",
+    "leakLevel": 0
+  },
+  {
+    "id": "elbow1",
+    "type": "elbow",
+    "name": "弯头1"
+  },
+  {
+    "id": "elbow2",
+    "type": "elbow",
+    "name": "弯头2"
+  },
+  {
+    "id": "elbow3",
+    "type": "elbow",
+    "name": "弯头3"
+  },
+  {
+    "id": "elbow4",
+    "type": "elbow",
+    "name": "弯头4"
+  },
+  {
+    "id": "elbow5",
+    "type": "elbow",
+    "name": "弯头5"
+  },
+  {
+    "id": "elbow6",
+    "type": "elbow",
+    "name": "弯头6"
+  },
+  {
+    "id": "production1",
+    "type": "production",
+    "name": "产汽点1"
+  },
+  {
+    "id": "production2",
+    "type": "production",
+    "name": "产汽点2"
+  },
+  {
+    "id": "production3",
+    "type": "production",
+    "name": "产汽点3"
+  },
+  {
+    "id": "consumption1",
+    "type": "consumption",
+    "name": "用汽点1"
+  },
+  {
+    "id": "consumption2",
+    "type": "consumption",
+    "name": "用汽点2"
+  },
+  {
+    "id": "consumption3",
+    "type": "consumption",
+    "name": "用汽点3"
+  },
+  {
+    "id": "tee1",
+    "type": "tee",
+    "name": "三通1"
+  },
+  {
+    "id": "tee2",
+    "type": "tee",
+    "name": "三通2"
+  },
+  {
+    "id": "tee3",
+    "type": "tee",
+    "name": "三通3"
+  },
+  {
+    "id": "compensator1",
+    "type": "compensator",
+    "name": "补偿器1"
+  },
+  {
+    "id": "compensator2",
+    "type": "compensator",
+    "name": "补偿器2"
+  },
+  {
+    "id": "compensator3",
+    "type": "compensator",
+    "name": "补偿器3"
+  }
+]

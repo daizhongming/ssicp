@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.PipeMapper">
+    <update id="updatedel">
+        UPDATE pipe
+        set `delete_flag` = 1
+        WHERE id = #{id}
+    </update>
+
+    <sql id="Base_Column_List">
+        id
+        ,
+                pipeline_id,
+                pipe_code,
+                pipe_name,
+                start_position,
+                end_position,
+                drawing_code,
+                pipe_length,
+                age_limit,
+                pipe_thickness,
+                thickness_series,
+                safe_grade,
+                material_thickness,
+                use_time,
+                qc_time,
+                nominal_diameter,
+                nominal_od,
+                laying_method,
+                supply_point,
+                use_point,
+                pipe_material,
+                devise_pressure,
+                devise_temperature,
+                devise_flux,
+                devise_life,
+                create_time,
+                update_time,
+                created_by_id,
+                updated_by_id,
+                delete_flag,
+                comments
+    </sql>
+
+    <update id="update">
+        UPDATE pipe
+        <set>
+            <if test="null != pipeCode and '' != pipeCode">pipe_code = #{pipeCode},</if>
+            <if test="null != pipeName and '' != pipeName">pipe_name = #{pipeName},</if>
+            <if test="null != startPosition and '' != startPosition">start_position = #{startPosition},</if>
+            <if test="null != endPosition and '' != endPosition">end_position = #{endPosition},</if>
+            <if test="null != drawingCode and '' != drawingCode">drawing_code = #{drawingCode},</if>
+            <if test="null != pipeLength">pipe_length = #{pipeLength},</if>
+            <if test="null != pipeThickness">pipe_thickness = #{pipeThickness},</if>
+            <if test="null != thicknessSeries and '' != thicknessSeries">thickness_series = #{thicknessSeries},</if>
+            <if test="null != safeGrade and '' != safeGrade">safe_grade = #{safeGrade},</if>
+            <if test="null != nominalDiameter">nominal_diameter = #{nominalDiameter},</if>
+            <if test="null != nominalOd and '' != nominalOd">nominal_od = #{nominalOd},</if>
+            <if test="null != pipeMaterial and '' != pipeMaterial">pipe_material = #{pipeMaterial},</if>
+            <if test="null != createdByName and '' != createdByName">created_by_name = #{createdByName},</if>
+            <if test="null != updatedByName and '' != updatedByName">updated_by_name = #{updatedByName},</if>
+            <if test="null != deleteFlag">delete_flag = #{deleteFlag},</if>
+            <if test="null != comments and '' != comments">comments = #{comments}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateMaintenance">
+        UPDATE pipe_maintenance
+        <set>
+            <if test="null != pipeId and '' != pipeId">pipe_id = #{pipeId},</if>
+            <if test="null != workingYears">working_years = #{workingYears},</if>
+            <if test="null != useTime">use_time = #{useTime},</if>
+            <if test="null != usageDuration">usage_duration = #{usageDuration},</if>
+            <if test="null != checkPeriod and '' != checkPeriod">check_period = #{checkPeriod},</if>
+            <if test="null != layingMethod and '' != layingMethod">laying_method = #{layingMethod},</if>
+            <if test="null != qcDate">qc_date = #{qcDate}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateDevise">
+        UPDATE pipe_devise
+        <set>
+            <if test="null != pipeId and '' != pipeId">pipe_id = #{pipeId},</if>
+            <if test="null != devisePressure">devise_pressure = #{devisePressure},</if>
+            <if test="null != deviseTemperature">devise_temperature = #{deviseTemperature},</if>
+            <if test="null != deviseFlux">devise_flux = #{deviseFlux},</if>
+            <if test="null != deviseLife">devise_life = #{deviseLife}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateInsulation">
+        UPDATE pipe_insulation
+        <set>
+            <if test="null != pipeId and '' != pipeId">pipe_id = #{pipeId},</if>
+            <if test="null != insulationMaterial and '' != insulationMaterial">insulation_material =
+                #{insulationMaterial},
+            </if>
+            <if test="null != insulation and '' != insulation">insulation = #{insulation},</if>
+            <if test="null != insulationMaterialThickness">insulation_material_thickness =
+                #{insulationMaterialThickness},
+            </if>
+            <if test="null != ageLimit">age_limit = #{ageLimit}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insert">
+        INSERT INTO pipe
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="null != pipeCode and '' != pipeCode">
+                pipe_code,
+            </if>
+            <if test="null != pipeName and '' != pipeName">
+                pipe_name,
+            </if>
+            <if test="null != startPosition and '' != startPosition">
+                start_position,
+            </if>
+            <if test="null != endPosition and '' != endPosition">
+                end_position,
+            </if>
+            <if test="null != drawingCode and '' != drawingCode">
+                drawing_code,
+            </if>
+            <if test="null != pipeLength and '' != pipeLength">
+                pipe_length,
+            </if>
+            <if test="null != pipeThickness and '' != pipeThickness">
+                pipe_thickness,
+            </if>
+            <if test="null != thicknessSeries and '' != thicknessSeries">
+                thickness_series,
+            </if>
+            <if test="null != safeGrade and '' != safeGrade">
+                safe_grade,
+            </if>
+            <if test="null != nominalDiameter and '' != nominalDiameter">
+                nominal_diameter,
+            </if>
+            <if test="null != nominalOd and '' != nominalOd">
+                nominal_od,
+            </if>
+            <if test="null != pipeMaterial and '' != pipeMaterial">
+                pipe_material,
+            </if>
+            <if test="null != deviceId and '' != deviceId">
+                device_id,
+            </if>
+            <if test="null != createTime and '' != createTime">
+                create_time,
+            </if>
+            <if test="null != updateTime and '' != updateTime">
+                update_time,
+            </if>
+            <if test="null != createdByName and '' != createdByName">
+                created_by_name,
+            </if>
+            <if test="null != updatedByName and '' != updatedByName">
+                updated_by_name,
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                delete_flag,
+            </if>
+            <if test="null != comments and '' != comments">
+                comments
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            <if test="null != pipeCode and '' != pipeCode">
+                #{pipeCode},
+            </if>
+            <if test="null != pipeName and '' != pipeName">
+                #{pipeName},
+            </if>
+            <if test="null != startPosition and '' != startPosition">
+                #{startPosition},
+            </if>
+            <if test="null != endPosition and '' != endPosition">
+                #{endPosition},
+            </if>
+            <if test="null != drawingCode and '' != drawingCode">
+                #{drawingCode},
+            </if>
+            <if test="null != pipeLength and '' != pipeLength">
+                #{pipeLength},
+            </if>
+            <if test="null != pipeThickness and '' != pipeThickness">
+                #{pipeThickness},
+            </if>
+            <if test="null != thicknessSeries and '' != thicknessSeries">
+                #{thicknessSeries},
+            </if>
+            <if test="null != safeGrade and '' != safeGrade">
+                #{safeGrade},
+            </if>
+            <if test="null != nominalDiameter and '' != nominalDiameter">
+                #{nominalDiameter},
+            </if>
+            <if test="null != nominalOd and '' != nominalOd">
+                #{nominalOd},
+            </if>
+            <if test="null != pipeMaterial and '' != pipeMaterial">
+                #{pipeMaterial},
+            </if>
+            <if test="null != deviceId and '' != deviceId">
+                #{deviceId},
+            </if>
+            <if test="null != createTime and '' != createTime">
+                #{createTime},
+            </if>
+            <if test="null != updateTime and '' != updateTime">
+                #{updateTime},
+            </if>
+            <if test="null != createdByName and '' != createdByName">
+                #{createdByName},
+            </if>
+            <if test="null != updatedByName and '' != updatedByName">
+                #{updatedByName},
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                #{deleteFlag},
+            </if>
+            <if test="null != comments and '' != comments">
+                #{comments}
+            </if>
+        </trim>
+    </insert>
+    <insert id="inserMaintenance" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO pipe_maintenance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != pipeId and '' != pipeId">
+                pipe_id,
+            </if>
+            <if test="null != workingYears">
+                working_years,
+            </if>
+            <if test="null != useTime">
+                use_time,
+            </if>
+            <if test="null != usageDuration">
+                usage_duration,
+            </if>
+            <if test="null != checkPeriod and '' != checkPeriod">
+                check_period,
+            </if>
+            <if test="null != layingMethod and '' != layingMethod">
+                laying_method,
+            </if>
+            <if test="null != qcDate">
+                qc_date
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="null != pipeId and '' != pipeId">
+                #{pipeId},
+            </if>
+            <if test="null != workingYears">
+                #{workingYears},
+            </if>
+            <if test="null != useTime">
+                #{useTime},
+            </if>
+            <if test="null != usageDuration">
+                #{usageDuration},
+            </if>
+            <if test="null != checkPeriod and '' != checkPeriod">
+                #{checkPeriod},
+            </if>
+            <if test="null != layingMethod and '' != layingMethod">
+                #{layingMethod},
+            </if>
+            <if test="null != qcDate">
+                #{qcDate}
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertDevise" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO pipe_devise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != pipeId and '' != pipeId">
+                pipe_id,
+            </if>
+            <if test="null != devisePressure and '' != devisePressure">
+                devise_pressure,
+            </if>
+            <if test="null != deviseTemperature and '' != deviseTemperature">
+                devise_temperature,
+            </if>
+            <if test="null != deviseFlux and '' != deviseFlux">
+                devise_flux,
+            </if>
+            <if test="null != deviseLife and '' != deviseLife">
+                devise_life
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="null != pipeId and '' != pipeId">
+                #{pipeId},
+            </if>
+            <if test="null != devisePressure and '' != devisePressure">
+                #{devisePressure},
+            </if>
+            <if test="null != deviseTemperature and '' != deviseTemperature">
+                #{deviseTemperature},
+            </if>
+            <if test="null != deviseFlux and '' != deviseFlux">
+                #{deviseFlux},
+            </if>
+            <if test="null != deviseLife and '' != deviseLife">
+                #{deviseLife}
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertInsulation" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO pipe_insulation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="null != pipeId and '' != pipeId">
+                pipe_id,
+            </if>
+            <if test="null != insulationMaterial and '' != insulationMaterial">
+                insulation_material,
+            </if>
+            <if test="null != insulation and '' != insulation">
+                insulation,
+            </if>
+            <if test="null != insulationMaterialThickness and '' != insulationMaterialThickness">
+                insulation_material_thickness,
+            </if>
+            <if test="null != ageLimit and '' != ageLimit">
+                age_limit
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="null != pipeId and '' != pipeId">
+                #{pipeId},
+            </if>
+            <if test="null != insulationMaterial and '' != insulationMaterial">
+                #{insulationMaterial},
+            </if>
+            <if test="null != insulation and '' != insulation">
+                #{insulation},
+            </if>
+            <if test="null != insulationMaterialThickness and '' != insulationMaterialThickness">
+                #{insulationMaterialThickness},
+            </if>
+            <if test="null != ageLimit and '' != ageLimit">
+                #{ageLimit}
+            </if>
+        </trim>
+    </insert>
+
+    <select id="devicesandAlarm" resultType="com.zhilianhua.ssicp.entity.response.DeviceGroupAlarmVO">
+        SELECT DISTINCT da.`index` as indexname,
+        da.`id` as indexid,
+        d.`id` as did,
+        d.`device_name` dname,
+        d.`parent_device_type` as parentDeviceType
+        FROM `device_alarm` AS da
+        JOIN
+        (`device` AS d INNER JOIN `pipe` AS p ON p.pipeline_id = d.pipeline_id)
+        ON
+        da.device_id = d.id
+        <where>
+            p.delete_flag=0
+            <if test="id != null and id != ''">
+                and p.pipeline_id = #{id}
+            </if>
+        </where>
+    </select>
+    <select id="selectList" resultType="java.util.Map">
+        SELECT id as dictValue, pipe_name as dictLabel
+        FROM `pipe`
+        where delete_flag = 0
+    </select>
+    <sql id="searchCondition">
+        <where>
+            p.delete_flag=0
+            <if test="keyword!=null and keyword != ''">
+                and(
+                p.pipe_code like CONCAT('%', #{keyword}, '%') or
+                p.pipe_name like CONCAT('%', #{keyword}, '%') or
+                p.start_position like CONCAT('%', #{keyword}, '%') or
+                p.end_position like CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="pipeIds!=null and pipeIds.size()>0">
+                and p.id in
+                <foreach collection="pipeIds" item="pipeId" open="(" separator="," close=")">
+                    #{pipeId}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+    <select id="pageList" resultType="com.zhilianhua.ssicp.entity.response.PipeVO">
+        SELECT p.id AS id,
+        p.pipe_code,
+        p.pipe_name,
+        p.start_position,
+        p.end_position,
+        p.drawing_code,
+        p.pipe_length,
+        pm.usage_duration,
+        p.pipe_thickness,
+        p.safe_grade,
+        pi.insulation_material,
+        pi.insulation_material_thickness,
+        pm.use_time,
+        pm.qc_date,
+        p.device_id
+        FROM pipe AS p
+        JOIN pipe_insulation AS pi
+        JOIN pipe_maintenance AS pm ON p.id = pi.pipe_id
+        AND p.id = pm.pipe_id
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+
+    <select id="pageListCount" resultType="long">
+        SELECT COUNT(*)
+        FROM pipe AS p
+        JOIN pipe_insulation AS pi
+        JOIN pipe_maintenance AS pm ON p.id = pi.pipe_id
+        AND p.id = pm.pipe_id
+        <include refid="searchCondition"></include>
+    </select>
+    <select id="getByid" resultType="com.zhilianhua.ssicp.entity.db.Pipe">
+        select *
+        from pipe
+        where id = #{id} and delete_flag = 0
+    </select>
+    <select id="getMaintenanceBypipeId" resultType="com.zhilianhua.ssicp.entity.db.PipeMaintenance">
+        select *
+        from pipe_maintenance
+        where pipe_id = #{pipeId}
+    </select>
+    <select id="getDeviseBypipeId" resultType="com.zhilianhua.ssicp.entity.db.PipeDevise">
+        select *
+        from pipe_devise
+        where pipe_id = #{pipeId}
+    </select>
+    <select id="getInsulationBypipeId" resultType="com.zhilianhua.ssicp.entity.db.PipeInsulation">
+        select *
+        from pipe_insulation
+        where pipe_id = #{pipeId}
+    </select>
+    <select id="getDeviceAlarmListBypipeId" resultType="com.zhilianhua.ssicp.entity.db.DeviceAlarm">
+        select da.*
+        from device as d
+        join
+        device_alarm as da
+        on d.id = da.device_id
+        <where>
+            <if test="deviceId != null and deviceId != ''">
+                and d.id = #{deviceId}
+            </if>
+        </where>
+    </select>
+</mapper>

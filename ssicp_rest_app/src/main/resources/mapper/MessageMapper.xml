@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.MessageMapper">
+
+    <insert id="add">
+        INSERT INTO message ( title,user_name,`type`,business_id,analyse_type )
+        VALUES
+        (
+        #{title},#{userName},#{type},#{businessId},#{analyseType}
+        )
+    </insert>
+    <update id="update">
+        update message set title=#{title},analyse_type=#{analyseType},read_flag=0,create_time=now(),update_time=null where id=#{id}
+    </update>
+    <update id="readAll">
+        update message set read_flag=1 where user_name=#{userName} and read_flag=0
+    </update>
+    <update id="readById">
+        update message set read_flag=1 where id=#{id} and read_flag=0
+    </update>
+    <update id="readByTypeAndBusinessId">
+        update message set read_flag=1 where type=#{type} and business_id=#{businessId} and read_flag=0
+    </update>
+    <select id="findByUser" resultType="Message">
+        select * from message where user_name=#{userName} order by create_time desc
+    </select>
+    <select id="load" resultType="Message">
+        select * from message where type=#{type} and business_id=#{businessId} and user_name=#{userName}
+    </select>
+    <select id="analyse" resultType="com.zhilianhua.ssicp.entity.response.MessageAnalyseEntity">
+        SELECT
+        analyse_type type,
+        sum(read_flag = 0) un_read_count,
+        sum(read_flag = 1) read_count
+        FROM
+        message
+        <where>
+            <if test="userName != null and userName != ''">
+                user_name=#{userName}
+            </if>
+        </where>
+        GROUP BY
+        analyse_type
+    </select>
+</mapper>

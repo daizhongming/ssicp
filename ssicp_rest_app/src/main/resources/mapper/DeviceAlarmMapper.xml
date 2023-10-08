@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.DeviceAlarmMapper">
+    <sql id="Base_Column_List">
+        id
+        ,
+                device_id,
+                `index`,
+                unit,
+                lower_alarm,
+                senior_alarm,
+                senior_senior_alarm,
+                `state`,
+                create_time,
+                update_time,
+                created_by_name,
+                updated_by_name,
+                comments
+    </sql>
+    <update id="update">
+        UPDATE device_alarm
+        <set>
+            <if test="null != deviceId and '' != deviceId">device_id = #{deviceId},</if>
+            <if test="null != index and '' != index">`index` = #{index},</if>
+            <if test="null != unit and '' != unit">unit = #{unit},</if>
+            <if test="null != lowerAlarm and '' != lowerAlarm">lower_alarm = #{lowerAlarm},</if>
+            <if test="null != seniorAlarm and '' != seniorAlarm">senior_alarm = #{seniorAlarm},</if>
+            <if test="null != seniorSeniorAlarm and '' != seniorSeniorAlarm">senior_senior_alarm =
+                #{seniorSeniorAlarm},
+            </if>
+            <if test="null != state">`state` = #{state},</if>
+            <if test="null != deleteFlag">delete_flag = #{deleteFlag},</if>
+            <if test="null != comments and '' != comments">comments = #{comments}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="ignore">
+        update device_alarm set ignore_time=#{ignoreTime} where device_id=#{deviceId} and `index`=#{indexId}
+    </update>
+    <delete id="deleteBydId">
+        delete from device_alarm where device_id = #{deviceId}
+    </delete>
+
+    <select id="selectBydid">
+        select *
+        from device_alarm
+        where device_id = #{did}
+    </select>
+
+    <select id="findAll" resultType="DeviceAlarm">
+        select *
+        from device_alarm
+        where delete_flag=0
+        and state=1
+    </select>
+
+    <select id="getById" resultType="com.zhilianhua.ssicp.entity.response.DeviceAlarmVo">
+        SELECT da.*,
+               d.device_name,
+               dict.dict_label device_type_name
+        FROM device_alarm da
+                 LEFT JOIN device d ON da.device_id = d.id
+                 LEFT JOIN dict_data dict ON dict.type_code = 'device_type'
+            AND dict.dict_value = d.parent_device_type
+        WHERE da.id = #{id}
+    </select>
+    <select id="findAlarBydidAndindex" resultType="com.zhilianhua.ssicp.entity.db.DeviceAlarm">
+        select *
+        from device_alarm
+        where device_id = #{did}
+          and `index` = #{index}
+        and delete_flag=0
+        and state=1
+    </select>
+
+    <select id="getIndicatortemplate" resultType="com.zhilianhua.ssicp.entity.db.DeviceAlarm">
+        select *
+        from device_alarm
+        where id in
+        <foreach item="deviceAlarmId" collection="deviceAlarmIds" open="(" separator="," close=")">
+            #{deviceAlarmId}
+        </foreach>
+    </select>
+
+
+    <insert id="saveBatch">
+        INSERT INTO `device_alarm` (<include refid="Base_Column_List"></include>)
+        VALUES
+        <foreach collection="deviceAlarms" item="item" separator=",">
+            (#{item.id},#{item.deviceId},#{item.index},#{item.unit},#{item.lowerAlarm},#{item.seniorAlarm},#{item.seniorSeniorAlarm},#{item.state},#{item.createTime},#{item.updateTime},#{item.createdByName},#{item.updatedByName},#{item.comments})
+        </foreach>
+    </insert>
+    <insert id="insert">
+        INSERT INTO device_alarm
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="null != deviceId and '' != deviceId">
+                device_id,
+            </if>
+            <if test="null != index and '' != index">
+                `index`,
+            </if>
+            <if test="null != unit and '' != unit">
+                unit,
+            </if>
+            <if test="null != lowerAlarm and '' != lowerAlarm">
+                lower_alarm,
+            </if>
+            <if test="null != seniorAlarm and '' != seniorAlarm">
+                senior_alarm,
+            </if>
+            <if test="null != seniorSeniorAlarm and '' != seniorSeniorAlarm">
+                senior_senior_alarm,
+            </if>
+            <if test="null != state and '' != state">
+                `state`,
+            </if>
+            <if test="null != createTime and '' != createTime">
+                create_time,
+            </if>
+            <if test="null != updateTime and '' != updateTime">
+                update_time,
+            </if>
+            <if test="null != createdByName and '' != createdByName">
+                created_by_name,
+            </if>
+            <if test="null != updatedByName and '' != updatedByName">
+                updated_by_name,
+            </if>
+            <if test="null != comments and '' != comments">
+                comments
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            <if test="null != deviceId and '' != deviceId">
+                #{deviceId},
+            </if>
+            <if test="null != index and '' != index">
+                #{index},
+            </if>
+            <if test="null != unit and '' != unit">
+                #{unit},
+            </if>
+            <if test="null != lowerAlarm and '' != lowerAlarm">
+                #{lowerAlarm},
+            </if>
+            <if test="null != seniorAlarm and '' != seniorAlarm">
+                #{seniorAlarm},
+            </if>
+            <if test="null != seniorSeniorAlarm and '' != seniorSeniorAlarm">
+                #{seniorSeniorAlarm},
+            </if>
+            <if test="null != state and '' != state">
+                #{state},
+            </if>
+            <if test="null != createTime and '' != createTime">
+                #{createTime},
+            </if>
+            <if test="null != updateTime and '' != updateTime">
+                #{updateTime},
+            </if>
+            <if test="null != createdByName and '' != createdByName">
+                #{createdByName},
+            </if>
+            <if test="null != updatedByName and '' != updatedByName">
+                #{updatedByName},
+            </if>
+            <if test="null != comments and '' != comments">
+                #{comments}
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

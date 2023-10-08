@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.ManualInspectionOutcomeMapper">
+    <insert id="add">
+        INSERT INTO manual_inspection_outcome (outcome_code,
+                                               plan_code,
+                                               plan_name,
+                                               `state`,
+                                               create_time,
+                                               due_date,
+                                               update_time,
+                                               iteration_number,
+                                               responsible_name)
+        VALUES (#{outcomeCode},
+                #{planCode},
+                #{planName},
+                #{state},
+                #{createTime},
+                #{dueDate},
+                #{updateTime},
+                #{iterationNumber},
+                #{responsibleName})
+    </insert>
+    <insert id="addImages">
+        INSERT INTO manual_outcome_image (
+        device_id,
+        outcome_code,
+        file_list,
+        info_id
+        )
+        VALUES
+        <foreach collection="manualOutcomeImages" item="item" separator=",">
+            (
+            #{item.deviceId},
+            #{item.outcomeCode},
+            #{item.fileList},
+            #{item.infoId}
+            )
+        </foreach>
+    </insert>
+    <insert id="addObserve">
+        INSERT INTO manual_outcome_observe (
+        decide,
+        decide_description,
+        device_id,
+        outcome_code,
+        info_id
+        )
+        VALUES
+        <foreach collection="manualOutcomeObserves" item="item" separator=",">
+            (
+            #{item.decide},
+            #{item.decideDescription},
+            #{item.deviceId},
+            #{item.outcomeCode},
+            #{item.infoId}
+            )
+        </foreach>
+    </insert>
+    <insert id="addDetails">
+        INSERT INTO manual_outcome_details (
+        index_value,
+        `index`,
+        unit,
+        alarm_level,
+        device_id,
+        outcome_code,
+        info_id
+        )
+        VALUES
+        <foreach collection="manualOutcomeDetails" item="detail" separator=",">
+            (
+            #{detail.indexValue},
+            #{detail.index},
+            #{detail.unit},
+            #{detail.alarmLevel},
+            #{detail.deviceId},
+            #{detail.outcomeCode},
+            #{detail.infoId}
+            )
+        </foreach>
+    </insert>
+    <update id="updateDispose">
+        UPDATE manual_outcome_details
+        <set>
+            <if test="null != indexValue">index_value = #{indexValue},</if>
+            <if test="null != index and '' != index">`index` = #{index},</if>
+            <if test="null != unit and '' != unit">unit = #{unit},</if>
+            <if test="null != alarmLevel ">alarm_level = #{alarmLevel},</if>
+            <if test="null != deviceId and '' != deviceId">device_id = #{deviceId},</if>
+            <if test="null != outcomeCode and '' != outcomeCode">outcome_code = #{outcomeCode},</if>
+            <if test="null != infoId and '' != infoId">info_id = #{infoId}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateObserve">
+        UPDATE manual_outcome_observe
+        <set>
+            <if test="null != decide">decide = #{decide},</if>
+            <if test="null != decideDescription and '' != decideDescription">decide_description =
+                #{decideDescription},
+            </if>
+            <if test="null != deviceId and '' != deviceId">device_id = #{deviceId},</if>
+            <if test="null != outcomeCode and '' != outcomeCode">outcome_code = #{outcomeCode},</if>
+            <if test="null != infoId and '' != infoId">info_id = #{infoId}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updateImage">
+        UPDATE manual_outcome_image
+        <set>
+            <if test="null != deviceId and '' != deviceId">device_id = #{deviceId},</if>
+            <if test="null != outcomeCode and '' != outcomeCode">outcome_code = #{outcomeCode},</if>
+            <if test="null != fileList and '' != fileList">file_list = #{fileList},</if>
+            <if test="null != infoId and '' != infoId">info_id = #{infoId}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="update">
+        UPDATE manual_inspection_outcome
+        <set>
+            <if test="null != planCode and '' != planCode">plan_code = #{planCode},</if>
+            <if test="null != planName and '' != planName">plan_name = #{planName},</if>
+            <if test="null != state">`state` = #{state},</if>
+            <if test="null != iterationNumber">iteration_number = #{iterationNumber},</if>
+            <if test="null != responsibleName and '' != responsibleName">responsible_name = #{responsibleName}</if>
+        </set>
+        WHERE outcome_code = #{outcomeCode}
+    </update>
+
+    <sql id="searchCondition">
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and mio.plan_name like concat('%',#{keyword},'%')
+            </if>
+            <if test="status!=null and status!=''">
+                and mio.`state` in
+                <foreach collection="status" item="statu" open="(" separator="," close=")">
+                    #{statu}
+                </foreach>
+            </if>
+            <if test="responsibleName!=null and responsibleName!=''">
+                and mio.responsible_name = #{responsibleName}
+            </if>
+            <if test="planCode!=null and planCode!=''">
+                and mio.plan_code = #{planCode}
+            </if>
+            <if test="startTime!=null">
+                and mio.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime!=null">
+                and mio.create_time &lt;= #{endTime}
+            </if>
+        </where>
+    </sql>
+    <select id="search" resultType="com.zhilianhua.ssicp.entity.response.ManualInspectionOutcomeVO">
+        SELECT mio.*, u.nick_name AS nickName
+        FROM (
+        SELECT * FROM manual_inspection_outcome
+        WHERE state != 3
+        UNION ALL
+        SELECT m.*
+        FROM (
+        SELECT plan_code, MAX(create_time) AS latest_time
+        FROM manual_inspection_outcome
+        WHERE state = 3
+        GROUP BY plan_code
+        ) AS latest
+        JOIN manual_inspection_outcome AS m ON m.plan_code = latest.plan_code AND m.create_time = latest.latest_time
+        WHERE m.state = 3
+        ) AS mio
+        JOIN user AS u ON mio.responsible_name = u.name
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+
+    </select>
+
+    <select id="searchCount" resultType="long">
+        SELECT count(*)
+        FROM (
+        SELECT * FROM manual_inspection_outcome
+        WHERE state != 3
+        UNION ALL
+        SELECT m.*
+        FROM (
+        SELECT plan_code, MAX(create_time) AS latest_time
+        FROM manual_inspection_outcome
+        WHERE state = 3
+        GROUP BY plan_code
+        ) AS latest
+        JOIN manual_inspection_outcome AS m ON m.plan_code = latest.plan_code AND m.create_time = latest.latest_time
+        WHERE m.state = 3
+        ) AS mio
+        JOIN user AS u ON mio.responsible_name = u.name
+        <include refid="searchCondition"></include>
+    </select>
+
+    <select id="searchDeputy" resultType="com.zhilianhua.ssicp.entity.response.ManualInspectionOutcomeVO">
+        select mio.* , u.nick_name as nickName
+        from manual_inspection_outcome as mio join user as u on mio.responsible_name = u.name
+        <include refid="searchCondition"></include>
+    </select>
+
+    <select id="searchDeputyCount" resultType="long">
+        select count(*)
+        from manual_inspection_outcome as mio
+        <include refid="searchCondition"></include>
+    </select>
+
+    <select id="detailsByoutcomeCode" resultType="com.zhilianhua.ssicp.entity.db.ManualOutcomeDetails">
+        SELECT `mod`.*,
+               `d`.parent_device_type,
+               `d`.device_name,
+               dict.dict_label parent_device_type_name
+        FROM `manual_outcome_details` AS `mod`
+                 JOIN `device` AS `d` ON `mod`.device_id = `d`.id
+                 LEFT JOIN dict_data dict ON dict.type_code = 'device_type'
+            AND dict.dict_value = d.parent_device_type
+        WHERE `mod`.outcome_code = #{outcomeCode}
+    </select>
+
+    <select id="imageByoutcomeCode" resultType="com.zhilianhua.ssicp.entity.db.ManualOutcomeImage">
+        SELECT `moi`.*,
+               `d`.parent_device_type,
+               `d`.device_name,
+               dict.dict_label parent_device_type_name
+        FROM manual_outcome_image AS `moi`
+                 LEFT JOIN device AS `d` ON `moi`.device_id = `d`.id
+                 LEFT JOIN dict_data dict ON dict.type_code = 'device_type'
+            AND dict.dict_value = d.parent_device_type
+        WHERE `moi`.outcome_code = #{outcomeCode}
+    </select>
+
+    <select id="observeByoutcomeCode" resultType="com.zhilianhua.ssicp.entity.db.ManualOutcomeObserve">
+        SELECT `moo`.*,
+               `d`.parent_device_type,
+               `d`.device_name,
+               dict.dict_label parent_device_type_name
+        FROM `manual_outcome_observe` AS `moo`
+                 LEFT JOIN `device` AS `d` ON `moo`.device_id = `d`.id
+                 LEFT JOIN dict_data dict ON dict.type_code = 'device_type'
+            AND dict.dict_value = d.parent_device_type
+        WHERE `moo`.outcome_code = #{outcomeCode}
+    </select>
+    <select id="analyse" resultType="com.zhilianhua.ssicp.entity.response.AnalyseManualInspection">
+        SELECT
+        count(*) total,
+        sum(state = 3 AND now() &lt;= due_date) undo_count,
+        sum(state = 3 AND now() &gt; due_date) expire_count,
+        sum(state = 0) complete_count,
+        sum(state = 1) error_un_handle_count,
+        sum(state = 2) error_handled_count
+        FROM
+        manual_inspection_outcome
+        <where>
+            <if test="from != null">
+                and create_time &gt;= #{from}
+            </if>
+            <if test="to != null">
+                and create_time &lt;= #{to}
+            </if>
+        </where>
+    </select>
+    <select id="analyseByType" resultType="com.zhilianhua.ssicp.entity.response.AnalyseInspection">
+        SELECT d.dict_label                type,
+               count(*)                    total,
+               sum(state = 1 OR state = 2) error_count
+        FROM manual_inspection_outcome o
+                 LEFT JOIN manual_inspection_plan p ON p.plan_code = o.plan_code
+                 LEFT JOIN dict_data d ON d.type_code = 'manual_inspection_type'
+            AND p.inspection_type = d.dict_value
+        GROUP BY d.dict_label
+    </select>
+
+
+    <select id="findHalfMonth"
+            resultType="com.zhilianhua.ssicp.entity.response.ManualInspectionOutcomeAppVo">
+        SELECT o2.*,
+               u.nick_name responsible_nick_name
+        FROM (SELECT plan_code,
+                     MAX(create_time) create_time
+              FROM manual_inspection_outcome o
+              WHERE o.create_time > NOW() - INTERVAL 15 DAY
+                AND o.due_date >= now()
+              GROUP BY
+                  plan_code) o1
+                 LEFT JOIN manual_inspection_outcome o2 ON o2.plan_code = o1.plan_code
+            AND o2.create_time = o1.create_time
+                 LEFT JOIN USER u ON u.`name` = o2.responsible_name
+    </select>
+    <select id="getManualInspectionData"
+            resultType="com.zhilianhua.ssicp.entity.response.ManualInspectionOutcomeAppVo">
+        SELECT o2.*,
+               u.nick_name responsible_nick_name
+        FROM manual_inspection_outcome o2
+                 LEFT JOIN USER u ON u.`name` = o2.responsible_name
+        WHERE o2.plan_code = #{planCode}
+        ORDER BY create_time DESC LIMIT 1
+    </select>
+
+    <select id="queryExceptionToDos" resultType="com.zhilianhua.ssicp.entity.response.InspectionExceptionsVO">
+        select outcome_code     as outcomeCode,
+               plan_name        as planName,
+               `state`          as `state`,
+               responsible_name as responsibleName,
+               create_time      as createTime
+        from manual_inspection_outcome
+        where `state` = 1
+    </select>
+    <select id="findAllByUser" resultType="com.zhilianhua.ssicp.entity.response.ManualInspectionOutcomeAppVo">
+        SELECT o2.*,
+               p.inspection_type,
+               dict.dict_label inspection_type_name
+        FROM (SELECT plan_code,
+                     MAX(create_time) create_time
+              FROM manual_inspection_outcome o
+              WHERE o.responsible_name = #{responsibleName}
+                AND o.due_date >= now()
+              GROUP BY plan_code) o1
+                 LEFT JOIN manual_inspection_outcome o2 ON o2.plan_code = o1.plan_code
+            AND o2.create_time = o1.create_time
+                 LEFT JOIN manual_inspection_plan p ON o1.plan_code = p.plan_code
+                 LEFT JOIN dict_data dict ON dict.type_code = 'manual_inspection_type'
+            AND dict.dict_value = p.inspection_type
+    </select>
+    <select id="todoAnalyseForInspection"
+            resultType="com.zhilianhua.ssicp.entity.response.TodoAnalyseEntity">
+        SELECT
+        count(*) total,
+        IFNULL(sum(state = 3), 0) unHandle,
+        IFNULL(sum(state != 3), 0) handled
+        FROM
+        (
+        SELECT
+        plan_code,
+        max(create_time) create_time
+        FROM
+        manual_inspection_outcome
+        GROUP BY
+        plan_code
+        ) o1
+        LEFT JOIN manual_inspection_outcome o2 ON o2.plan_code = o2.plan_code
+        AND o2.create_time = o1.create_time
+        <where>
+            <if test="responsibleName!=null and responsibleName!=''">
+                o2.responsible_name=#{responsibleName}
+            </if>
+        </where>
+    </select>
+    <select id="todoAnalyseForError" resultType="com.zhilianhua.ssicp.entity.response.TodoAnalyseEntity">
+        SELECT
+        IFNULL(sum(state = 1 OR state = 2), 0) total,
+        IFNULL(sum(state = 1), 0) unHandle,
+        IFNULL(sum(state = 2), 0) handled
+        FROM
+        (
+        SELECT
+        plan_code,
+        max(create_time) create_time
+        FROM
+        manual_inspection_outcome
+        GROUP BY
+        plan_code
+        ) o1
+        LEFT JOIN manual_inspection_outcome o2 ON o2.plan_code = o2.plan_code
+        AND o2.create_time = o1.create_time
+        <where>
+            <if test="responsibleName!=null and responsibleName!=''">
+                o2.responsible_name=#{responsibleName}
+            </if>
+        </where>
+    </select>
+
+    <select id="findIndexLogsHistory" resultType="com.zhilianhua.ssicp.entity.flux.DeviceIndexLog">
+        SELECT `mod`.id,
+               `mod`.device_id      as deviceId,
+               MAX(mio.create_time) as `time`,
+               `mod`.index_value    as `value`
+        FROM manual_outcome_details AS `mod`
+                 JOIN manual_inspection_outcome AS mio ON `mod`.outcome_code = mio.outcome_code
+        WHERE `mod`.device_id = #{deviceId}
+          AND `mod`.`index` = #{index}
+          AND mio.state != 3
+  AND `mod`.index_value is not null
+        GROUP BY `mod`.id
+        ORDER BY `time` desc LIMIT 0, 7
+    </select>
+
+    <select id="getdispose" resultType="com.zhilianhua.ssicp.entity.db.AlarmactionInfo">
+        select ai.*, d.device_name
+        from alarmaction_info as ai
+                 join manual_outcome_image as moi on moi.info_id = ai.id
+                 join device as d on d.id = moi.device_id
+        where moi.outcome_code = #{outcomeCode}
+    </select>
+
+
+    <!--    <select id="getObserveByoutcomeCode" resultType="com.zhilianhua.ssicp.entity.db.ManualOutcomeObserve">-->
+    <!--        select *-->
+    <!--        from manual_outcome_observe-->
+    <!--        where outcome_code = #{outcomeCode}-->
+    <!--    </select>-->
+    <!--    <select id="getDetailsByoutcomeCode" resultType="com.zhilianhua.ssicp.entity.db.ManualOutcomeDetails">-->
+    <!--        select *-->
+    <!--        from manual_outcome_details-->
+    <!--        where outcome_code = #{outcomeCode}-->
+    <!--    </select>-->
+    <!--    <select id="getImagesByoutcomeCode" resultType="com.zhilianhua.ssicp.entity.db.ManualOutcomeImage">-->
+    <!--        select *-->
+    <!--        from manual_outcome_image-->
+    <!--        where outcome_code = #{outcomeCode}-->
+    <!--    </select>-->
+
+</mapper>

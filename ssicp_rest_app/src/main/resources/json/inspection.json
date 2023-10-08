@@ -1,0 +1,20 @@
+{
+  "type": "inspection",
+  "data": {
+    "paths": [
+      "pipe1",
+      "pipe2",
+      "pipe4",
+      "pipe5"
+    ],
+    "alarms": [
+      {
+        "id": "pipe1",
+        "type": "pipe",
+        "alarmLevel": 0,
+        "alarmIndex": "温度",
+        "alarmValue": 20
+      }
+    ]
+  }
+}

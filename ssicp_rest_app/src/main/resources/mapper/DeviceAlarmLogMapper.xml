@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.DeviceAlarmLogMapper">
+    <insert id="add">
+        INSERT INTO device_alarm_log
+        (
+        start_time,
+        alarm_value,
+        alarm_level,
+        device_id,
+        device_name,
+        device_type_name,
+        index_name,
+        index_id,
+        unit,
+        lower_alarm,
+        senior_alarm,
+        senior_senior_alarm
+        )
+        values (
+        #{startTime},
+        #{alarmValue},
+        #{alarmLevel},
+        #{deviceId},
+        #{deviceName},
+        #{deviceTypeName},
+        #{indexName},
+        #{indexId},
+        #{unit},
+        #{lowerAlarm},
+        #{seniorAlarm},
+        #{seniorSeniorAlarm}
+        )
+    </insert>
+    <update id="handle">
+        update device_alarm_log
+        set alarmaction_info_id=#{alarmActionInfoId},
+        handle_status=#{handleStatus},
+        handle_time=now(),
+        handle_user_name=#{handleUserName},
+        handle_user_nick_name=#{handleUserNickName},
+        handle_cost_time=now() - start_time
+        where device_id = #{deviceId}
+        and index_id = #{indexId}
+        and handle_status = 0
+    </update>
+
+    <sql id="condition">
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and
+                (
+                dal2.index_name like concat('%',#{keyword},'%')
+                or
+                dal2.device_name like concat('%',#{keyword},'%')
+                or
+                dal2.device_type_name like concat('%',#{keyword},'%')
+                )
+            </if>
+
+            <if test="handleStatus!=null">
+                and dal2.handle_status=#{handleStatus}
+            </if>
+
+            <if test="alarmLevel!=null">
+                and dal2.alarm_level=#{alarmLevel}
+            </if>
+
+            <if test="dateRangeStart!=null">
+                and dal2.start_time &gt;= #{dateRangeStart}
+            </if>
+
+            <if test="dateRangeEnd!=null">
+                and dal2.start_time &lt;= #{dateRangeEnd}
+            </if>
+        </where>
+    </sql>
+
+    <select id="search" resultType="com.zhilianhua.ssicp.entity.response.DeviceAlarmLogVo">
+        SELECT
+        dal.alarm_times,
+        ai.file_list,
+        ai.file_list_before,
+        ai.resolution_reason alarm_reason,
+        ai.summary handle_description,
+        ai.ignore_time,
+        dal2.*
+        FROM
+        (
+        SELECT
+        max(id) id,
+        count(*) alarm_times
+        FROM
+        device_alarm_log dal
+        WHERE
+        dal.handle_status = #{handleStatus}
+        GROUP BY
+        device_id,
+        index_id
+        ) dal
+        LEFT JOIN device_alarm_log dal2 ON dal2.id = dal.id
+        LEFT JOIN alarmaction_info ai ON dal2.alarmaction_info_id = ai.id
+        <include refid="condition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.order"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+
+    <select id="searchCount" resultType="long">
+        SELECT
+        count(*)
+        FROM
+        (
+        SELECT
+        max(id) id
+        FROM
+        device_alarm_log dal
+        WHERE
+        dal.handle_status = #{handleStatus}
+        GROUP BY
+        device_id,
+        index_id
+        ) dal
+        LEFT JOIN device_alarm_log dal2 ON dal2.id = dal.id
+        <include refid="condition"></include>
+    </select>
+
+
+    <select id="getLast" resultType="com.zhilianhua.ssicp.entity.response.DeviceAlarmLogVo">
+        SELECT
+        ai.file_list,
+        ai.file_list_before,
+        ai.resolution_reason alarm_reason,
+        ai.summary handle_description,
+        ai.ignore_time,
+        dal2.*
+        FROM (SELECT max(id) id
+        FROM device_alarm_log
+        WHERE device_id=#{deviceId} and index_id = #{indexId}) dal
+        LEFT JOIN device_alarm_log dal2 ON dal2.id = dal.id
+        LEFT JOIN alarmaction_info ai ON dal2.alarmaction_info_id = ai.id
+    </select>
+    <select id="findAlarmDetails" resultType="com.zhilianhua.ssicp.entity.response.DeviceAlarmLogAlarmDetailsVo">
+        SELECT
+        dal.*
+        FROM
+        device_alarm_log dal
+        WHERE
+        dal.device_id = #{deviceId}
+        and dal.index_id = #{indexId}
+        <if test="handleTime!=null">
+            and dal.handle_time = #{handleTime}
+        </if>
+        <if test="handleTime==null">
+            and dal.handle_status=0
+        </if>
+        order by dal.start_time desc
+    </select>
+
+    <select id="findHandleDetails" resultType="com.zhilianhua.ssicp.entity.response.DeviceAlarmLogHandleDetailsVo">
+        SELECT
+        handle_time,
+        max(handle_status) handle_status,
+        max(handle_user_nick_name) handle_user_nick_name
+        FROM
+        device_alarm_log d1
+        WHERE
+        device_id = #{deviceId}
+        and index_id = #{indexId}
+        AND handle_status != 0
+        <if test="handleTime!=null">
+            and handle_time &lt;= #{handleTime}
+        </if>
+        GROUP BY
+        handle_time
+        ORDER BY
+        handle_time DESC
+    </select>
+
+
+    <select id="analyseByIndexName" resultType="com.zhilianhua.ssicp.entity.response.AnalyseVo">
+        SELECT
+        dal.index_name group_by_name,
+        count(*) un_handle_times
+        FROM
+        device_alarm_log dal
+        WHERE
+        dal.handle_status = 0
+        GROUP BY
+        dal.index_name
+    </select>
+
+
+    <select id="analyseByMonth" resultType="com.zhilianhua.ssicp.entity.response.AnalyseVo">
+        SELECT DATE_FORMAT(start_time, '%Y-%m') group_by_name,
+        sum(handle_status = 0) un_handle_times,
+        sum(handle_status != 0) handled_times
+        FROM device_alarm_log
+        WHERE start_time > DATE_FORMAT(
+        DATE_SUB(CURDATE(), INTERVAL 5 MONTH),
+        '%Y-%m'
+        )
+        GROUP BY DATE_FORMAT(start_time, '%Y-%m')
+    </select>
+
+    <select id="findByids" resultType="com.zhilianhua.ssicp.entity.response.IndexLogVO">
+        select d.device_name,
+        da.`index`,
+        da.unit,
+        dil.index_value
+        from device as d , device_alarm as da ,device_index_log as dil
+        where dil.device_id=d.id and dil.index_id=da.id and dil.id in
+        <foreach collection="logIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY d.`device_name`
+    </select>
+    <select id="findIndexLogsByids" resultType="com.zhilianhua.ssicp.entity.db.IndexLog">
+        select
+        dil.id as index_log_id,
+        d.device_name,
+        da.`index`,
+        da.unit,
+        dil.index_value,
+        da.lower_alarm,
+        da.senior_alarm,
+        da.senior_senior_alarm,
+        d.parent_device_type
+        from device as d , device_alarm as da ,device_index_log as dil
+        where dil.device_id=d.id and dil.index_id=da.id and dil.id in
+        <foreach collection="logIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY d.`device_name`
+    </select>
+    <select id="countDeviceAnomalies" resultType="com.zhilianhua.ssicp.entity.response.AnalyseVo">
+        SELECT
+            all_labels.dict_label as groupByName,
+            IFNULL(SUM(CombinedTable.count_num), 0) as unHandleTimes
+        FROM
+            (SELECT DISTINCT dict_label
+             FROM dict_data
+             WHERE type_code = "device_type") as all_labels
+                LEFT JOIN
+            (SELECT dd.dict_label, COUNT(1) AS count_num
+             FROM inteligent_outcome_details AS iod
+                      JOIN device_alarm AS da ON iod.device_id = da.device_id AND iod.`index` = da.`index`
+                      JOIN device AS d ON iod.device_id = d.id
+                      JOIN dict_data AS dd ON dd.dict_value = d.parent_device_type
+             WHERE iod.alarm_level != 3 AND dd.type_code = "device_type"
+             GROUP BY d.parent_device_type, dd.dict_label
+
+             UNION ALL
+
+             SELECT dd.dict_label, COUNT(1) AS count_num
+             FROM manual_outcome_details AS `mod`
+                 JOIN device AS d ON `mod`.device_id = d.id
+                 JOIN dict_data AS dd ON dd.dict_value = d.parent_device_type
+             WHERE `mod`.alarm_level != 3
+               AND `mod`.alarm_level IS NOT NULL
+               AND dd.type_code = "device_type"
+             GROUP BY d.parent_device_type, dd.dict_label) AS CombinedTable
+            ON
+                all_labels.dict_label = CombinedTable.dict_label
+        GROUP BY
+            all_labels.dict_label
+    </select>
+    <select id="analyseAnomaliesByMonth" resultType="com.zhilianhua.ssicp.entity.response.AnalyseVo">
+        SELECT CombinedTable.group_by_name as groupByName,
+        SUM(CombinedTable.un_handle_times) AS unHandleTimes,
+        SUM(CombinedTable.handled_times) AS handledTimes
+        FROM (SELECT DATE_FORMAT(iio.create_time, '%Y-%m') AS group_by_name,
+        SUM(iio.state = 1) AS un_handle_times,
+        SUM(iio.state = 2) AS handled_times
+        FROM intelligent_inspection_outcome AS iio
+        WHERE iio.create_time >
+        DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 5 MONTH), '%Y-%m')
+        GROUP BY DATE_FORMAT(iio.create_time, '%Y-%m')
+
+        UNION ALL
+
+        SELECT DATE_FORMAT(mio.create_time, '%Y-%m') AS group_by_name,
+        SUM(mio.state = 1) AS un_handle_times,
+        SUM(mio.state = 2) AS handled_times
+        FROM manual_inspection_outcome AS mio
+        WHERE mio.create_time >
+        DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 5 MONTH), '%Y-%m')
+        GROUP BY DATE_FORMAT(mio.create_time, '%Y-%m')) AS CombinedTable
+        GROUP BY CombinedTable.group_by_name
+        ORDER BY CombinedTable.group_by_name;
+    </select>
+    <select id="findIndexLogsByalarmids" resultType="com.zhilianhua.ssicp.entity.db.IndexLog">
+        SELECT
+        dil.id as index_log_id,
+        d.device_name,
+        da.`index`,
+        da.id `alarm_id`,
+        da.unit,
+        dil.index_value,
+        da.lower_alarm,
+        da.senior_alarm,
+        da.senior_senior_alarm,
+        d.parent_device_type
+        FROM
+        device as d
+        JOIN
+        device_alarm as da
+        JOIN
+        device_index_log as dil
+        ON
+        dil.device_id=d.id AND dil.index_id=da.id
+        WHERE
+        dil.id IN (
+        SELECT
+        dt1.id
+        FROM
+        (
+        SELECT
+        dt.index_id,
+        MAX(dt.create_time) AS MaxDateTime
+        FROM
+        device_index_log dt
+        WHERE
+        dt.index_id IN
+        <foreach collection="alarmids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        GROUP BY
+        dt.index_id
+        ) dt2
+        JOIN
+        device_index_log dt1
+        ON
+        dt1.index_id = dt2.index_id AND dt1.create_time = dt2.MaxDateTime
+        )
+        ORDER BY
+        d.`device_name`
+    </select>
+    <select id="analyseBy" resultType="com.zhilianhua.ssicp.entity.response.AnalyseEntity">
+        SELECT ${columnName} type,
+        count(*) count
+        FROM
+        device_alarm_log
+        WHERE
+        handle_status = 0
+        GROUP BY ${columnName}
+    </select>
+    <select id="countUnHandle" resultType="int">
+        SELECT count(*)
+        FROM device_alarm_log
+        WHERE index_id = #{indexId}
+        AND handle_status = 0
+    </select>
+    <select id="analyse" resultType="com.zhilianhua.ssicp.entity.response.TodoAnalyseEntity">
+        SELECT count(*) total,
+        sum(log2.handle_status = 0) unHandle,
+        sum(log2.handle_status != 0) handled
+        FROM (SELECT max(id) id
+        FROM device_alarm_log
+        GROUP BY device_id,index_id) log1
+        LEFT JOIN device_alarm_log log2 ON log2.id = log1.id;
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.FittingsMapper">
+
+    <insert id="saveBatch" parameterType="java.util.List">
+        INSERT INTO `fittings` (`pipeline_id`, `parent_fittings_types`, `fittings_types`, `fittings_model`, `location`, `created_by_id`, `updated_by_id`, `comments`)
+        VALUES
+        <foreach collection="fittings" item="item" separator=",">
+            (#{item.pipelineId}, #{item.parentFittingsTypes}, #{item.fittingsTypes}, #{item.fittingsModel}, #{item.location}, #{item.createdById}, #{item.updatedById}, #{item.comments})
+        </foreach>
+    </insert>
+
+
+    <select id="selectbypid" resultType="com.zhilianhua.ssicp.entity.db.Fittings">
+        select *
+        from `fittings`
+        where delete_flag=0 and pipeline_id=#{id}
+    </select>
+
+    <delete id="deleteBypid">
+        DELETE FROM fittings
+        WHERE pipeline_id = #{pid}
+    </delete>
+
+</mapper>

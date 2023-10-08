@@ -1,0 +1,10 @@
+{
+  "type": "alarm",
+  "data": {
+    "id": "pipe1",
+    "type": "pipe",
+    "alarmLevel": 0,
+    "alarmIndex": "温度",
+    "alarmValue": 20
+  }
+}

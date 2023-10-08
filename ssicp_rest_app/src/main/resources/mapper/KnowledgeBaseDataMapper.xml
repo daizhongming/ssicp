@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.KnowledgeBaseDataMapper">
+
+    <insert id="saveBatch">
+        INSERT INTO knowledge_base_data
+        (id, device_type, device_ids, `index`, unit, max_index_value, min_index_value, base_id)
+        VALUES
+        <foreach collection="knowledgeBaseDataList" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.deviceType},
+            #{item.deviceIds},
+            #{item.index},
+            #{item.unit},
+            #{item.maxIndexValue},
+            #{item.minIndexValue},
+            #{item.baseId}
+            )
+        </foreach>
+    </insert>
+    <delete id="deleteByBaseId">
+        delete
+        from knowledge_base_data
+        where base_id = #{baseId}
+    </delete>
+    <select id="selectBykid" resultType="com.zhilianhua.ssicp.entity.db.KnowledgeBaseData">
+        select *
+        from knowledge_base_data
+        where base_id = #{kid}
+    </select>
+</mapper>

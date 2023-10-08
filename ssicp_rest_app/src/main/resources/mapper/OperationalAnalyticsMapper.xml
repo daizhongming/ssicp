@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.OperationalAnalyticsMapper">
+
+    <select id="findAll" resultType="com.zhilianhua.ssicp.entity.db.OperationalAnalytics">
+        SELECT *
+        FROM operational_analytics
+        order by type
+    </select>
+</mapper>

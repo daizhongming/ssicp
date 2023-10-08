@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.PipelineAnalyseMapper">
+
+
+    <sql id="searchCondition">
+        <where>
+            <if test="null != keyword and '' != keyword">
+                and(`pipeline_name` like CONCAT('%', #{keyword}, '%')
+                or`nominal_diameter` like CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="null != pid and '' != pid">
+                and `gp` = #{pid}
+            </if>
+        </where>
+    </sql>
+
+    <select id="search" resultType="com.zhilianhua.ssicp.entity.db.PipelineAnalyse">
+        SELECT
+            pa.*
+        FROM pipeline_analyse as pa
+        <include refid="searchCondition"></include>
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="searchCount" resultType="long">
+        select count(*)
+        FROM pipeline_analyse as pa ,pipeline as p
+        <include refid="searchCondition"></include>
+    </select>
+</mapper>

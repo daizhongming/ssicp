@@ -1,0 +1,32 @@
+[
+  {
+    "id": "XXXXXXXX1",
+    "fromId": "XXXXXXXX1_01",
+    "toId": "XXXXXXXX1_02",
+    "speed": 1
+  },
+  {
+    "id": "XXXXXXXX2",
+    "fromId": "XXXXXXXX2_01",
+    "toId": "XXXXXXXX2_02",
+    "speed": 2
+  },
+  {
+    "id": "XXXXXXXX3",
+    "fromId": "XXXXXXXX3_01",
+    "toId": "XXXXXXXX3_02",
+    "speed": 3
+  },
+  {
+    "id": "XXXXXXXX4",
+    "fromId": "XXXXXXXX4_01",
+    "toId": "XXXXXXXX4_02",
+    "speed": 4
+  },
+  {
+    "id": "XXXXXXXX5",
+    "fromId": "XXXXXXXX5_01",
+    "toId": "XXXXXXXX5_02",
+    "speed": 5
+  }
+]

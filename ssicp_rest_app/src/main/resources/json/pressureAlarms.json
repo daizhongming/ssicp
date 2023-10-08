@@ -1,0 +1,32 @@
+[
+  {
+    "objectType": "普通仪表",
+    "pipe": "XXXXX01",
+    "index": "压力",
+    "alarmValue": 5.626,
+    "alarmLevel": 1,
+    "alarmTime": "2023/05/01 13:22",
+    "exceptionPosition": "位于管段330米处",
+    "alarmCount": "1次"
+  },
+  {
+    "objectType": "普通仪表",
+    "pipe": "XXXXX01",
+    "index": "压力",
+    "alarmValue": 5.626,
+    "alarmLevel": 1,
+    "alarmTime": "2023/05/01 13:22",
+    "exceptionPosition": "位于管段330米处",
+    "alarmCount": "1次"
+  },
+  {
+    "objectType": "普通仪表",
+    "pipe": "XXXXX01",
+    "index": "压力",
+    "alarmValue": 5.626,
+    "alarmLevel": 1,
+    "alarmTime": "2023/05/01 13:22",
+    "exceptionPosition": "位于管段330米处",
+    "alarmCount": "1次"
+  }
+]

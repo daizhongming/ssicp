@@ -1,0 +1,20 @@
+{
+  "type": "simulation",
+  "data": [
+    {
+      "id": "pipe1Id",
+      "type": "pipe",
+      "otherParam": "..."
+    },
+    {
+      "id": "pipe2Id",
+      "type": "pipe",
+      "otherParam": "..."
+    },
+    {
+      "id": "production1Id",
+      "type": "production",
+      "otherParam": "..."
+    }
+  ]
+}

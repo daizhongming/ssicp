@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhilianhua.ssicp.mapper.PipelineMapper">
+
+    <update id="updateDeleteFlag">
+        update pipeline
+        set delete_flag = 1
+        where id = #{id}
+    </update>
+
+    <update id="update">
+        UPDATE pipeline
+        <set>
+            <if test="null != pipelineName and '' != pipelineName">pipeline_name = #{pipelineName},</if>
+            <if test="null != pipelineType and '' != pipelineType">pipeline_type = #{pipelineType},</if>
+            <if test="null != pressureRating and '' != pressureRating">pressure_rating = #{pressureRating},</if>
+            <if test="null != region and '' != region">region = #{region},</if>
+            <if test="null != startPosition and '' != startPosition">start_position = #{startPosition},</if>
+            <if test="null != endPosition and '' != endPosition">end_position = #{endPosition},</if>
+            <if test="null != pipeIds and '' != pipeIds">pipe_ids = #{pipeIds},</if>
+            <if test="null != createTime and '' != createTime">create_time = #{createTime},</if>
+            <if test="null != updateTime and '' != updateTime">update_time = #{updateTime},</if>
+            <if test="null != createdById and '' != createdById">created_by_id = #{createdById},</if>
+            <if test="null != updatedById and '' != updatedById">updated_by_id = #{updatedById},</if>
+            <if test="null != deleteFlag and '' != deleteFlag">delete_flag = #{deleteFlag},</if>
+            <if test="null != comments and '' != comments">comments = #{comments}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insert">
+        INSERT INTO pipeline
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="null != pipelineName and '' != pipelineName">
+                pipeline_name,
+            </if>
+            <if test="null != pipelineType and '' != pipelineType">
+                pipeline_type,
+            </if>
+            <if test="null != pressureRating and '' != pressureRating">
+                pressure_rating,
+            </if>
+            <if test="null != region and '' != region">
+                region,
+            </if>
+            <if test="null != startPosition and '' != startPosition">
+                start_position,
+            </if>
+            <if test="null != endPosition and '' != endPosition">
+                end_position,
+            </if>
+            <if test="null != pipeIds and '' != pipeIds">
+                pipe_ids,
+            </if>
+            <if test="null != createTime and '' != createTime">
+                create_time,
+            </if>
+            <if test="null != updateTime and '' != updateTime">
+                update_time,
+            </if>
+            <if test="null != createdById and '' != createdById">
+                created_by_id,
+            </if>
+            <if test="null != updatedById and '' != updatedById">
+                updated_by_id,
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                delete_flag,
+            </if>
+            <if test="null != comments and '' != comments">
+                comments
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id},
+            <if test="null != pipelineName and '' != pipelineName">
+                #{pipelineName},
+            </if>
+            <if test="null != pipelineType and '' != pipelineType">
+                #{pipelineType},
+            </if>
+            <if test="null != pressureRating and '' != pressureRating">
+                #{pressureRating},
+            </if>
+            <if test="null != region and '' != region">
+                #{region},
+            </if>
+            <if test="null != startPosition and '' != startPosition">
+                #{startPosition},
+            </if>
+            <if test="null != endPosition and '' != endPosition">
+                #{endPosition},
+            </if>
+            <if test="null != pipeIds and '' != pipeIds">
+                #{pipeIds},
+            </if>
+            <if test="null != createTime and '' != createTime">
+                #{createTime},
+            </if>
+            <if test="null != updateTime and '' != updateTime">
+                #{updateTime},
+            </if>
+            <if test="null != createdById and '' != createdById">
+                #{createdById},
+            </if>
+            <if test="null != updatedById and '' != updatedById">
+                #{updatedById},
+            </if>
+            <if test="null != deleteFlag and '' != deleteFlag">
+                #{deleteFlag},
+            </if>
+            <if test="null != comments and '' != comments">
+                #{comments}
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectById" resultType="com.zhilianhua.ssicp.entity.db.Pipeline">
+        SELECT *
+        FROM pipeline
+        WHERE delete_flag = 0
+          and id = #{id}
+    </select>
+
+
+    <select id="pressurePipelineGrouping" resultType="com.zhilianhua.ssicp.entity.response.PipelineVo">
+        SELECT pl.id AS pid,
+        pl.pipeline_name AS pname,
+        dd.dict_label AS dictLabel,
+        pl.pipe_ids as pipe_ids
+        FROM pipeline AS pl
+        LEFT JOIN dict_data AS dd ON pl.pressure_rating = dd.dict_value
+        WHERE pl.delete_flag = 0
+        and dd.type_code = 'pipeline_pressure'
+        <if test="regions.size() > 0">
+            and pl.region in
+            <foreach collection="regions" item="region" open="(" separator="," close=")">
+                #{region}
+            </foreach>
+        </if>
+    </select>
+
+    <sql id="searchCondition">
+        <where>
+            delete_flag = 0
+            <if test="keyword!=null and keyword != ''">
+                and(
+                pipeline_name like CONCAT('%', #{keyword}, '%') or
+                start_position like CONCAT('%', #{keyword}, '%') or
+                end_position like CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+    </sql>
+
+    <select id="pageList" resultType="com.zhilianhua.ssicp.entity.db.Pipeline">
+        select *
+        from pipeline
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+
+    <select id="pageListCount" resultType="long">
+        select COUNT(*)
+        from pipeline
+        <include refid="searchCondition"></include>
+        <include refid="com.zhilianhua.ssicp.mapper.CommonMapper.page"></include>
+    </select>
+    <select id="getid" resultType="com.zhilianhua.ssicp.entity.db.Pipeline">
+        select *
+        from pipeline
+        where id = #{pipelineId}
+    </select>
+    <select id="getBypid" resultType="com.zhilianhua.ssicp.entity.db.Pipeline">
+        SELECT *
+        FROM `pipeline`
+        WHERE `pipe_ids` LIKE CONCAT('%', #{id}, '%')
+    </select>
+    <select id="findAll" resultType="com.zhilianhua.ssicp.entity.db.Pipeline">
+        select * from pipeline where delete_flag=0
+    </select>
+
+</mapper>

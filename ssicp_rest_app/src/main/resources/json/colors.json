@@ -1,0 +1,165 @@
+{
+  "alarm": [
+    {
+      "name": "低报",
+      "value": 0,
+      "color": "#00BBFF"
+    },
+    {
+      "name": "高报",
+      "value": 1,
+      "color": "#008000"
+    },
+    {
+      "name": "高高报",
+      "value": 2,
+      "color": "#FF0000"
+    }
+  ],
+  "insulationLayer": [
+    {
+      "name": "无保温层",
+      "value": -1,
+      "color": "#D7D7D7"
+    },
+    {
+      "name": "岩棉",
+      "value": 1,
+      "color": "#00BBFF"
+    },
+    {
+      "name": "玻璃棉",
+      "value": 2,
+      "color": "#008000"
+    },
+    {
+      "name": "气凝胶",
+      "value": 3,
+      "color": "#FF0000"
+    }
+  ],
+  "pressure": [
+    {
+      "name": "低压",
+      "value": 0.35,
+      "color": "#00BBFF"
+    },
+    {
+      "name": "中压",
+      "value": 1.0,
+      "color": "#008000"
+    },
+    {
+      "name": "高压",
+      "value": 3.7,
+      "color": "#FF0000"
+    },
+    {
+      "name": "超高压",
+      "value": 12.0,
+      "color": "#800000"
+    }
+  ],
+  "temperatureDrop": [
+    {
+      "name": "管线未投用",
+      "from": -99999999,
+      "to": 0,
+      "color": "#D7D7D7"
+    },
+    {
+      "name": "低温降",
+      "from": 0,
+      "to": 7,
+      "color": "#00BBFF"
+    },
+    {
+      "name": "中温降",
+      "from": 7,
+      "to": 14,
+      "color": "#008000"
+    },
+    {
+      "name": "高温降",
+      "from": 14,
+      "to": 21,
+      "color": "#FF0000"
+    },
+    {
+      "name": "超高温降",
+      "from": 21,
+      "to": 99999999,
+      "color": "#800000"
+    }
+  ],
+  "pressureDrop": [
+    {
+      "name": "管线未投用",
+      "from": -99999999,
+      "to": 0,
+      "color": "#D7D7D7"
+    },
+    {
+      "name": "低压降",
+      "from": 0,
+      "to": 33,
+      "color": "#00BBFF"
+    },
+    {
+      "name": "在适合范围",
+      "from": 33,
+      "to": 130,
+      "color": "#008000"
+    },
+    {
+      "name": "压降过高",
+      "from": 130,
+      "to": 99999999,
+      "color": "#FF0000"
+    }
+  ],
+  "flowVelocity": [
+    {
+      "name": "流速过慢",
+      "from": -99999999,
+      "to": 5,
+      "color": "#D7D7D7"
+    },
+    {
+      "name": "流速较慢",
+      "from": 5,
+      "to": 10,
+      "color": "#00BBFF"
+    },
+    {
+      "name": "流速偏慢",
+      "from": 10,
+      "to": 20,
+      "color": "#008000"
+    },
+    {
+      "name": "流速正常",
+      "from": 20,
+      "to": 35,
+      "color": "#FF0000"
+    },
+    {
+      "name": "流速过快",
+      "from": 35,
+      "to": 99999999,
+      "color": "#800000"
+    }
+  ],
+  "condensate": [
+    {
+      "name": "有冷凝水",
+      "value": 1,
+      "color": "#FF0000"
+    },
+    {
+      "name": "没有冷凝水",
+      "value": 0,
+      "color": "#800000"
+    }
+  ]
+}
