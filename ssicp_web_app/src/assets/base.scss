@@ -1,0 +1,91 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+html,
+body {
+  height: 100%;
+  // font-size: 10px; // 设置根元素的大小
+
+  min-width: 125rem;
+  min-height: 40rem;
+  color: #94abcb;
+}
+
+// 媒体查询设置响应式布局
+@media screen and (max-width: 1440px) {
+  html,
+  body {
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 1440px) and (max-width: 1680px) {
+  html,
+  body {
+    font-size: 11px;
+  }
+}
+
+@media screen and (min-width: 1680px) and (max-width: 1920px) {
+  html,
+  body {
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 1920px) and (max-width: 2048px) {
+  html,
+  body {
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 2048px) and (max-width: 2560) {
+  html,
+  body {
+    font-size: 16px;
+  }
+}
+
+@media screen and (min-width: 2560px) {
+  html,
+  body {
+    font-size: 20px;
+  }
+}
+
+#app {
+  height: 100%;
+}
+
+@font-face {
+  font-family: "YouSheBiaoTiHei";
+  src: url("@/assets/fonts/YouSheBiaoTiHei/396385b48ad7cb2df0fea7b96a899414.eot");
+  /* IE9*/
+  src: url("@/assets/fonts/YouSheBiaoTiHei/396385b48ad7cb2df0fea7b96a899414.eot?#iefix")
+      format("embedded-opentype"),
+    /* IE6-IE8 */
+      url("@/assets/fonts/YouSheBiaoTiHei/396385b48ad7cb2df0fea7b96a899414.woff2")
+      format("woff2"),
+    /* chrome、firefox */
+      url("@/assets/fonts/YouSheBiaoTiHei/396385b48ad7cb2df0fea7b96a899414.woff")
+      format("woff"),
+    /* chrome、firefox */
+      url("@/assets/fonts/YouSheBiaoTiHei/396385b48ad7cb2df0fea7b96a899414.ttf")
+      format("truetype"),
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+      url("@/assets/fonts/YouSheBiaoTiHei/396385b48ad7cb2df0fea7b96a899414.svg#YouSheBiaoTiHei")
+      format("svg");
+  /* iOS 4.1- */
+}
+
+.flex-container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+.text-right {
+  text-align: right;
+}

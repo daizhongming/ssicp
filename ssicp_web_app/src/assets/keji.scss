@@ -1,0 +1,118 @@
+html.keji {
+  --el-bg-color-overlay: rgba(7, 19, 49, 0.9);
+  --el-bg-color: rgba(4, 21, 65, 0.9);
+  --el-border-color: #1a4b7d;
+  --el-border-color-hover: var(--el-border-color);
+  --el-border-color-light: var(--el-border-color);
+  --el-border-color-lighter: var(--el-border-color);
+  .el-input__wrapper {
+    background-color: rgba(17, 41, 73, 0.5);
+  }
+  .el-input-group__append {
+    width: 20px;
+  }
+  .el-table {
+    width: 100%;
+    height: 100%;
+    --el-table-header-bg-color: #08266f;
+    .cell {
+      padding: 0 10px;
+    }
+    .el-table__header {
+      .cell {
+        font-style: italic;
+      }
+    }
+    &_withoutBottomBorder {
+      > .el-table__inner-wrapper::before {
+        background: none;
+      }
+    }
+  }
+  .el-form-item {
+    margin-bottom: 0.5rem;
+    .el-form-item__label {
+      color: #3bb7ff;
+    }
+  }
+  .el-button {
+    &:not(.is-text) {
+      background-image: url('@/assets/images/button_bg.png');
+      background-size: 100% 100%;
+      border: none;
+    }
+    &.is-text {
+      padding: 0;
+    }
+  }
+  .el-dialog {
+    background-color: rgba(#091835, 0.9);
+    & > .el-dialog__header {
+      background-image: url('@/assets/images/dialog/01.png'),
+        url('@/assets/images/dialog/02.png');
+      background-repeat: no-repeat, repeat-x;
+      background-position: left, 50rem;
+      background-size: 50rem 4rem, auto 4rem;
+      padding: 0rem 1rem 0rem 1rem;
+      font-family: 'YouSheBiaoTiHei';
+      height: 4rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      position: relative;
+
+      & > .el-dialog__title {
+        padding-left: 3rem;
+        padding-bottom: 0.8rem;
+        flex: 1 0 0;
+        width: 0;
+        font-size: 1.8rem;
+      }
+      & > .el-dialog__headerbtn {
+        position: static;
+        padding-bottom: 0.8rem;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .el-icon {
+          width: 1.5rem;
+          height: 1.5rem;
+          svg {
+            width: 1.5rem;
+            height: 1.5rem;
+          }
+        }
+      }
+    }
+    & > .el-dialog__body {
+      border: 4px solid;
+      border-image: linear-gradient(to bottom, rgba(#285393, 0.2), #285393) 1;
+      border-top: none;
+      padding: 0.5rem 1rem;
+    }
+  }
+  .el-message {
+    top: 45% !important;
+    &__icon {
+      font-size: 1.5rem;
+    }
+    &__content {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .global-hide-scrollbar .el-scrollbar__bar.is-vertical {
+    display: none;
+  }
+
+  .global-disable-horizontal-scroll .el-scrollbar__wrap {
+    overflow-x: hidden !important;
+  }
+  .global-disable-horizontal-scroll .el-scrollbar__bar.is-horizontal {
+    display: none;
+  }
+
+
+}
